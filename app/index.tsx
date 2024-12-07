@@ -8,16 +8,18 @@ export default function Screen() {
 
   const handleNavigate = () => {
     router.navigate("/auth/login");
-  }
+  };
 
   return (
     <View className="flex flex-col justify-around bg-[#E0FBE2] h-screen">
       <View className="px-16 mt-20">
         <Text className="text-[#176219] text-5xl font-bold">Welcome</Text>
-        <Text className="text-[#176219] text-lg">We're glad that you are here</Text>
+        <Text className="text-[#176219] text-lg">
+          We're glad that you are here
+        </Text>
       </View>
       <View className="px-32 py-10 my-20">
-        <Button className="bg-[#176219]" size='lg' onPress={handleNavigate}>
+        <Button className="bg-[#176219]" size="lg" onPress={handleNavigate}>
           <Text className="text-[#E0FBE2] text-lg">Let's get started</Text>
         </Button>
       </View>
