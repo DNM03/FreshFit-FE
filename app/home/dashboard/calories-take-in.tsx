@@ -80,7 +80,7 @@ const CaloriesTakeIn = () => {
             </Text>
           </View>
         </View>
-        <View className="flex flex-row gap-x-4 w-full justify-between items-end px-3">
+        <View className="flex flex-row gap-x-4 w-full justify-center items-end px-3">
           {daysData.map((day, index) => (
             <Pressable
               key={index}

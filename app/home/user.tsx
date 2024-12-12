@@ -10,10 +10,19 @@ import {
   Clipboard,
   Notebook,
 } from "lucide-react-native";
+import Preferences from "~/features/user/preferences";
+import Notifications from "~/features/user/notifications";
 
 const User = () => {
+  const [modalVisibale, setModalVisible] = React.useState(-1);
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
+      {modalVisibale === 1 && (
+        <Preferences onClose={() => setModalVisible(-1)} />
+      )}
+      {modalVisibale === 2 && (
+        <Notifications onClose={() => setModalVisible(-1)} />
+      )}
       <Text className="text-[#176219] text-5xl font-semibold">Profile</Text>
       <View className="flex flex-row px-2">
         <View>
@@ -37,14 +46,20 @@ const User = () => {
       </View>
       <View className="h-1 bg-[#3D6440] w-[100%] my-4 rounded-full"></View>
       <View className="flex gap-y-4">
-        <Pressable className="flex flex-row items-center">
+        <Pressable
+          className="flex flex-row items-center"
+          onPress={() => setModalVisible(1)}
+        >
           <Bolt size={24} color="#176219" />
 
           <Text className="text-[#176219] text-xl font-semibold ml-4">
-            Notification References
+            Notification Preferences
           </Text>
         </Pressable>
-        <Pressable className="flex flex-row items-center">
+        <Pressable
+          className="flex flex-row items-center"
+          onPress={() => setModalVisible(2)}
+        >
           <Bell size={24} color="#176219" />
 
           <Text className="text-[#176219] text-xl font-semibold ml-4">

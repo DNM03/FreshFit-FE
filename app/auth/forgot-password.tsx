@@ -11,7 +11,7 @@ const ForgotPassword = () => {
 
   const handleNavigate = () => {
     router.push("/auth/otp");
-  }
+  };
   return (
     <View className="flex-1 items-center justify-around bg-[#E0FBE2]">
       <View></View>
@@ -24,7 +24,11 @@ const ForgotPassword = () => {
         <CardContent className="flex flex-col gap-y-4">
           <Input placeholder="Enter your email" />
 
-          <Button className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4" size="lg" onPress={handleNavigate}>
+          <Button
+            className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4"
+            size="lg"
+            onPress={handleNavigate}
+          >
             <Text className="text-[#E0FBE2] text-lg ">Send</Text>
           </Button>
         </CardContent>

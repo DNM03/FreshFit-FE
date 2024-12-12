@@ -10,6 +10,8 @@ export default function Layout() {
         }}
       />
       <Stack.Screen name="meal-detail" options={{ headerShown: false }} />
+      <Stack.Screen name="create-meal" options={{ headerShown: false }} />
+
       {/* <Stack.Screen name="auth/register" options={{ headerShown: false }} /> */}
     </Stack>
   );
