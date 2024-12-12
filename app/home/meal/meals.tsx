@@ -36,7 +36,7 @@ const Meals = () => {
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5 flex-1">
       <Text className="text-[#176219] text-5xl font-semibold">Meals</Text>
-      <View className="flex flex-row  w-full justify-between items-end ">
+      <View className="flex flex-row  w-full justify-center items-end ">
         {daysData.map((day, index) => (
           <Pressable
             key={index}
@@ -54,7 +54,13 @@ const Meals = () => {
           </Pressable>
         ))}
       </View>
-      <Button className="mt-4 mx-10 bg-[#176219]">
+      <Button
+        className="mt-4 mx-10 bg-[#176219]"
+        onPress={() => {
+          console.log("Create new meal");
+          router.push("/home/meal/create-meal");
+        }}
+      >
         <Text className="text-[#E0FBE2]">Create meal</Text>
       </Button>
       <View className="mt-4">

@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ScrollView } from "react-native";
 import React from "react";
 import { ChevronLeft } from "lucide-react-native";
 import { useRouter } from "expo-router";
@@ -45,9 +45,9 @@ const MealDetail = () => {
           <FormInput placeholder="Search..." className="w-full" />
         </View>
         <Button className="bg-[#176219] mt-6 mx-20">
-          <Text className="text-[#E0FBE2]">Create new</Text>
+          <Text className="text-[#4c764f]">Create new</Text>
         </Button>
-        <View className="mt-4 px-4">
+        <ScrollView className="mt-4 px-4">
           {caloriesData.map((data, index) => (
             <CalorieCard
               key={index}
@@ -56,7 +56,7 @@ const MealDetail = () => {
               calorie={data.calories}
             />
           ))}
-        </View>
+        </ScrollView>
       </View>
     </View>
   );

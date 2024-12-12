@@ -84,7 +84,7 @@ const CaloriesBurned = () => {
             </Text>
           </View>
         </View>
-        <View className="flex flex-row gap-x-4 w-full justify-between items-end px-3 rounded-full">
+        <View className="flex flex-row gap-x-4 w-full justify-center items-end px-3 rounded-full">
           {daysData.map((day, index) => (
             <Pressable
               key={index}
