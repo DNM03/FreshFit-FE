@@ -80,6 +80,12 @@ export default function RootLayout() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="admin"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </SafeAreaView>
       <PortalHost />

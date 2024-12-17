@@ -10,12 +10,40 @@ import { Input } from "~/components/ui/input";
 import { Link } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "expo-router";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import {
+  loginDefaultValues,
+  loginSchema,
+  LoginValues,
+} from "~/lib/zod/login.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { authService } from "~/services/auth";
 
 const Login = () => {
   const router = useRouter();
   const handleNavigate = () => {
     console.log("Navigating to home");
     router.navigate("/home/dashboard/dashboard");
+  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema()),
+    defaultValues: loginDefaultValues,
+  });
+  const onSubmit: SubmitHandler<LoginValues> = async (data: LoginValues) => {
+    console.log(data);
+    try {
+      const response = await authService.login(
+        data.email_or_username,
+        data.password
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <View className="flex-1 items-center justify-around">
@@ -32,8 +60,31 @@ const Login = () => {
           <Text className="text-4xl font-semibold text-[#176219]">Login</Text>
         </CardHeader>
         <CardContent className="flex flex-col gap-y-4">
-          <Input placeholder="Enter your email or username" />
-          <Input placeholder="Enter your password" secureTextEntry />
+          <Controller
+            control={control}
+            name="email_or_username"
+            rules={{ required: "This field is required" }}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                placeholder="Enter your email or username"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="password"
+            rules={{ required: "This field is required" }}
+            render={({ field: { value, onChange } }) => (
+              <Input
+                placeholder="Enter your password"
+                secureTextEntry
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
           <Link
             href="/auth/forgot-password"
             className="text-[#176219] text-right text-sm mt-4 font-semibold"
@@ -43,7 +94,7 @@ const Login = () => {
           <Button
             className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4"
             size="lg"
-            onPress={handleNavigate}
+            onPress={handleSubmit(onSubmit)}
           >
             <Text className="text-[#E0FBE2] text-lg ">Let's go</Text>
           </Button>
