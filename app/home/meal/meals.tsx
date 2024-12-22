@@ -3,6 +3,7 @@ import React from "react";
 import DayCard from "~/components/ui/day-card";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
 
 const Meals = () => {
   const router = useRouter();
@@ -35,7 +36,26 @@ const Meals = () => {
   ];
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5 flex-1">
-      <Text className="text-[#176219] text-5xl font-semibold">Meals</Text>
+      <View className="flex flex-row items-center">
+        <Text className="text-[#176219] text-5xl font-semibold w-[240px]">
+          Meals
+        </Text>
+        <Picker
+          onValueChange={(value) => console.log(value)}
+          style={{
+            color: "#176219",
+            paddingVertical: 0,
+            width: 150,
+          }}
+        >
+          <Picker.Item
+            label="System"
+            value="system"
+            style={{ color: "#176219" }}
+          />
+          <Picker.Item label="Me" value="me" style={{ color: "#176219" }} />
+        </Picker>
+      </View>
       <View className="flex flex-row  w-full justify-center items-end ">
         {daysData.map((day, index) => (
           <Pressable

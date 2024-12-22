@@ -74,18 +74,32 @@ export default function RootLayout() {
             name="auth/reset-password"
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="auth/goal" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="auth/goal-weight"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="auth/height" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/weight" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/gender" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="auth/date-of-birth"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="auth/describe" options={{ headerShown: false }} />
+
           <Stack.Screen
             name="home"
             options={{
               headerShown: false,
             }}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="admin"
             options={{
               headerShown: false,
             }}
-          />
+          /> */}
         </Stack>
       </SafeAreaView>
       <PortalHost />

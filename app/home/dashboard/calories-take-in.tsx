@@ -69,7 +69,7 @@ const CaloriesTakeIn = () => {
       <View className="bg-[#FDFDFD] h-screen w-full px-2">
         <View className="flex flex-row justify-center items-center w-full pt-2 px-4 relative">
           <Pressable
-            onPress={() => router.navigate("/home/dashboard/dashboard")}
+            onPress={() => router.back()}
             className="absolute left-0 top-1/3"
           >
             <ChevronLeft size={32} color="#176219" className="" />

@@ -47,7 +47,7 @@ const Notifications = ({ onClose }: NotificationsProps) => {
         {notifications.map((notification, index) => (
           <View
             key={index}
-            className="flex flex-row items-center justify-between px-4 mt-6 bg-[#E0FBE2] p-2 rounded-md relative"
+            className="flex flex-row items-center justify-between px-4 mt-4 bg-[#E0FBE2] p-2 rounded-md relative"
             style={{ paddingRight: 34 }}
           >
             <View>

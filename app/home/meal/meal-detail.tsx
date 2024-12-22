@@ -30,7 +30,7 @@ const MealDetail = () => {
       <View className="bg-[#FDFDFD] h-screen w-full">
         <View className="flex flex-row justify-center items-center w-full pt-2 relative  px-2">
           <Pressable
-            onPress={() => router.replace("/home/meal/meals")}
+            onPress={() => router.back()}
             className="absolute left-0 top-1/3"
           >
             <ChevronLeft size={32} color="#176219" className="" />
@@ -44,8 +44,11 @@ const MealDetail = () => {
         <View className="px-8 w-full mt-4">
           <FormInput placeholder="Search..." className="w-full" />
         </View>
-        <Button className="bg-[#176219] mt-6 mx-20">
-          <Text className="text-[#4c764f]">Create new</Text>
+        <Button
+          className="bg-[#176219] mx-20"
+          onPress={() => router.navigate("/home/meal/create-dish")}
+        >
+          <Text className="text-[#E0FBE2]">Create new</Text>
         </Button>
         <ScrollView className="mt-4 px-4">
           {caloriesData.map((data, index) => (

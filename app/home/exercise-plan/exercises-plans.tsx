@@ -4,6 +4,7 @@ import { FormInput } from "~/components/ui/form-input";
 import { Button } from "~/components/ui/button";
 import PlanCard from "~/components/ui/plan-card";
 import { useRouter } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
 
 const ExercisesPlans = () => {
   const router = useRouter();
@@ -13,22 +14,41 @@ const ExercisesPlans = () => {
       type: "Strength",
       level: "Beginner",
       length: "4 weeks",
-      isChallenge: false,
+      onProgress: false,
     },
     {
       name: "Bodyweight for beginners",
       type: "Bodyweight",
       level: "Beginner",
       length: "5 weeks",
-      isChallenge: true,
+      onProgress: true,
     },
   ];
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
-      <Text className="text-[#176219] text-5xl font-semibold">Plans</Text>
-      <View className="flex flex-row">
-        <FormInput placeholder="Search..." className="w-2/3 mr-2" />
-        <Button className="bg-[#176219]">
+      <View className="flex flex-row items-center">
+        <Text className="text-[#176219] text-5xl font-semibold w-[240px]">
+          Plans
+        </Text>
+        <Picker
+          onValueChange={(value) => console.log(value)}
+          style={{
+            color: "#176219",
+            paddingVertical: 0,
+            width: 150,
+          }}
+        >
+          <Picker.Item
+            label="System"
+            value="system"
+            style={{ color: "#176219" }}
+          />
+          <Picker.Item label="Me" value="me" style={{ color: "#176219" }} />
+        </Picker>
+      </View>
+      <View className="flex flex-col ">
+        <FormInput placeholder="Search..." className="w-full" />
+        <Button className="bg-[#176219] mx-24">
           <Text className="text-[#E0FBE2]">Recommend</Text>
         </Button>
       </View>
@@ -40,7 +60,7 @@ const ExercisesPlans = () => {
             type={plan.type}
             length={plan.length}
             level={plan.level}
-            isChallenge={plan.isChallenge}
+            onProgress={plan.onProgress}
             onPress={() => {
               router.navigate("/home/exercise-plan/exercises-plan-detail");
             }}

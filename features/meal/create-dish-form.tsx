@@ -6,8 +6,10 @@ import { Textarea } from "~/components/ui/textarea";
 import { Picker } from "@react-native-picker/picker";
 import { Button } from "~/components/ui/button";
 import { Trash } from "lucide-react-native";
+import { useRouter } from "expo-router";
 
 const CreateDishForm = () => {
+  const router = useRouter();
   const ingredients = [
     { name: "Tomato", calorie: 200 },
     { name: "Carrot", calorie: 300 },
@@ -46,7 +48,10 @@ const CreateDishForm = () => {
             <View>
               <Text className="text-[#176219] font-medium">Ingredients</Text>
             </View>
-            <Button className="ml-auto bg-[#176219] ">
+            <Button
+              className="ml-auto bg-[#176219] "
+              onPress={() => router.navigate("/home/meal/create-ingredient")}
+            >
               <Text className="text-[#E0FBE2]">Edit Ingredient</Text>
             </Button>
           </View>

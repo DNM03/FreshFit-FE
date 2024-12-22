@@ -6,7 +6,7 @@ type PlanCardProps = {
   type: string;
   length: string;
   level: string;
-  isChallenge: boolean;
+  onProgress: boolean;
   onPress?: () => void;
 };
 
@@ -15,7 +15,7 @@ const PlanCard = ({
   length,
   type,
   level,
-  isChallenge,
+  onProgress,
   onPress,
 }: PlanCardProps) => {
   return (
@@ -35,9 +35,9 @@ const PlanCard = ({
               {length} - {type}
             </Text>
           </View>
-          {isChallenge && (
+          {onProgress && (
             <Text className="text-red-600 font-bold absolute right-2">
-              Challenge
+              On progress
             </Text>
           )}
         </View>

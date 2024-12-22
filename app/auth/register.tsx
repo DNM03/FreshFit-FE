@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Button } from "~/components/ui/button";
 
 const Register = () => {
@@ -24,7 +24,11 @@ const Register = () => {
           <Input placeholder="Enter your email" />
           <Input placeholder="Enter your password" />
           <Input placeholder="Confirm your password" />
-          <Button className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4" size="lg">
+          <Button
+            className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4"
+            size="lg"
+            onPress={() => router.push("/auth/goal")}
+          >
             <Text className="text-[#E0FBE2] text-lg ">Sign up</Text>
           </Button>
         </CardContent>
