@@ -14,7 +14,7 @@ const FormInput = React.forwardRef<
   FormInputProps
 >(({ className, placeholderClassName, label, ...props }, ref) => {
   return (
-    <View style={{ marginBottom: 16 }}>
+    <View style={{ marginBottom: 16, width: "100%" }}>
       {label && (
         <Label nativeID={label} className="text-[#176219]">
           {label}

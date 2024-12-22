@@ -17,23 +17,23 @@ const Preferences = ({ onClose }: PreferencesProps) => {
         <View className="ml-4 w-[24px]"></View>
       </View>
       <View>
-        <View className="flex flex-row items-center justify-between px-4 mt-6">
+        <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Challenges</Text>
           <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
         </View>
-        <View className="flex flex-row items-center justify-between px-4 mt-6">
+        <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Meals</Text>
           <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
         </View>
-        <View className="flex flex-row items-center justify-between px-4 mt-6">
+        <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Exercises</Text>
           <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
         </View>
-        <View className="flex flex-row items-center justify-between px-4 mt-6">
+        <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Water</Text>
           <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
         </View>
-        <View className="flex flex-row items-center justify-between px-4 mt-6">
+        <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Health</Text>
           <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
         </View>

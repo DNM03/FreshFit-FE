@@ -9,6 +9,10 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="challenge-overview"
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="challenge-detail" options={{ headerShown: false }} />
       {/* <Stack.Screen name="auth/register" options={{ headerShown: false }} /> */}
     </Stack>

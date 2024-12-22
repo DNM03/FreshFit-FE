@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 
 const EditAccountForm = () => {
   return (
-    <View className="flex-1">
+    <View className="flex-1 px-8 mt-4">
       <ScrollView style={{ marginBottom: 20 }} nestedScrollEnabled>
         <FormInput placeholder="Eg, ******" label="Old Password" />
         <FormInput placeholder="Eg, ******" label="New Password" />

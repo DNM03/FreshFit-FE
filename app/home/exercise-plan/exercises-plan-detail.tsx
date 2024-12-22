@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { ChevronLeft, Scroll } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { Button } from "~/components/ui/button";
 
 const ExercisesPlanDetail = () => {
   const router = useRouter();
@@ -19,19 +20,19 @@ const ExercisesPlanDetail = () => {
       week: "Week 1",
       exercises: [
         {
-          name: "Pushups",
+          name: "Arm sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 1,
         },
         {
-          name: "Squats",
+          name: "Leg sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 2,
         },
         {
-          name: "Plank",
+          name: "Full body sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 3,
@@ -42,19 +43,19 @@ const ExercisesPlanDetail = () => {
       week: "Week 2",
       exercises: [
         {
-          name: "Pushups",
+          name: "Arm sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 4,
         },
         {
-          name: "Squats",
+          name: "Leg sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 5,
         },
         {
-          name: "Plank",
+          name: "Full body sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 6,
@@ -65,19 +66,19 @@ const ExercisesPlanDetail = () => {
       week: "Week 3",
       exercises: [
         {
-          name: "Pushups",
+          name: "Arm sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 7,
         },
         {
-          name: "Squats",
+          name: "Leg sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 8,
         },
         {
-          name: "Plank",
+          name: "Full body sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 9,
@@ -88,19 +89,19 @@ const ExercisesPlanDetail = () => {
       week: "Week 4",
       exercises: [
         {
-          name: "Pushups",
+          name: "Arm sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 10,
         },
         {
-          name: "Squats",
+          name: "Leg sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 11,
         },
         {
-          name: "Plank",
+          name: "Full body sets",
           description: "3 sets of 10 reps",
           calories: 100,
           day: 12,
@@ -113,9 +114,7 @@ const ExercisesPlanDetail = () => {
       <View className="bg-[#FDFDFD] h-screen w-full">
         <View className="flex flex-row justify-center items-center w-full pt-2 relative  px-2">
           <Pressable
-            onPress={() =>
-              router.replace("/home/exercise-plan/exercises-plans")
-            }
+            onPress={() => router.back()}
             className="absolute left-0 top-1/3"
           >
             <ChevronLeft size={32} color="#176219" className="" />
@@ -157,26 +156,31 @@ const ExercisesPlanDetail = () => {
             <View className="h-1 bg-[#3D6440] w-[100%] my-4 rounded-full"></View>
             <View>
               {data[dataIndex].exercises.map((exercise, index) => (
-                <View
+                <Pressable
                   key={index}
-                  className="bg-[#E0FBE2] p-4 my-2 rounded-md flex flex-row justify-between"
+                  onPress={() => router.push("/home/exercise-plan/day-detail")}
                 >
-                  <View className="inline-flex">
-                    <Text className="text-[#176219] font-bold text-lg">
-                      Day {exercise.day} - {exercise.name}
-                    </Text>
+                  <View className="bg-[#E0FBE2] p-4 my-2 rounded-md flex flex-row justify-between">
+                    <View className="inline-flex">
+                      <Text className="text-[#176219] font-bold text-lg">
+                        Day {exercise.day} - {exercise.name}
+                      </Text>
+                      <Text className="text-[#176219] font-normal text-sm">
+                        {exercise.description}
+                      </Text>
+                    </View>
                     <Text className="text-[#176219] font-normal text-sm">
-                      {exercise.description}
+                      {exercise.calories} calories
                     </Text>
                   </View>
-                  <Text className="text-[#176219] font-normal text-sm">
-                    {exercise.calories} calories
-                  </Text>
-                </View>
+                </Pressable>
               ))}
             </View>
           </View>
         </ScrollView>
+        <Button className="bg-[#176219] mx-20 mb-20">
+          <Text className="text-[#E0FBE2]">Start Plan</Text>
+        </Button>
       </View>
     </View>
   );

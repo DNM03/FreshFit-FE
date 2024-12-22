@@ -2,12 +2,14 @@ import { View, Text, ScrollView, FlatList } from "react-native";
 import React from "react";
 import { FormInput } from "~/components/ui/form-input";
 import { Textarea } from "~/components/ui/textarea";
-import { Label } from "@rn-primitives/select";
 import { Button } from "~/components/ui/button";
 import { Picker } from "@react-native-picker/picker";
 import { Trash } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { Label } from "~/components/ui/label";
 
 const CreateMealForm = () => {
+  const router = useRouter();
   const dishes = [
     { name: "Salad", calorie: 200 },
     { name: "Rice", calorie: 300 },
@@ -60,7 +62,10 @@ const CreateMealForm = () => {
             <View>
               <Text className="text-[#176219] font-medium">Dishes</Text>
             </View>
-            <Button className="ml-auto bg-[#176219] ">
+            <Button
+              className="ml-auto bg-[#176219] "
+              onPress={() => router.push("/home/meal/dishes")}
+            >
               <Text className="text-[#E0FBE2]">Edit dishes</Text>
             </Button>
           </View>

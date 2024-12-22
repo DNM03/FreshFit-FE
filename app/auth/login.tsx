@@ -94,7 +94,7 @@ const Login = () => {
           <Button
             className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4"
             size="lg"
-            onPress={handleSubmit(onSubmit)}
+            onPress={handleNavigate}
           >
             <Text className="text-[#E0FBE2] text-lg ">Let's go</Text>
           </Button>
