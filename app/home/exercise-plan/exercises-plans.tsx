@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { FormInput } from "~/components/ui/form-input";
 import { Button } from "~/components/ui/button";
 import PlanCard from "~/components/ui/plan-card";
@@ -8,7 +8,7 @@ import { Picker } from "@react-native-picker/picker";
 
 const ExercisesPlans = () => {
   const router = useRouter();
-  const plans = [
+  const [plans, setPlans] = useState([
     {
       name: "Strength for beginners",
       type: "Strength",
@@ -22,6 +22,15 @@ const ExercisesPlans = () => {
       level: "Beginner",
       length: "5 weeks",
       onProgress: true,
+    },
+  ]);
+  const recommends = [
+    {
+      name: "Burn-out for beginners",
+      type: "Bodyweight",
+      level: "Beginner",
+      length: "5 weeks",
+      onProgress: false,
     },
   ];
   return (
@@ -48,7 +57,12 @@ const ExercisesPlans = () => {
       </View>
       <View className="flex flex-col ">
         <FormInput placeholder="Search..." className="w-full" />
-        <Button className="bg-[#176219] mx-24">
+        <Button
+          onPress={() => {
+            setPlans((prev) => [...prev, ...recommends]);
+          }}
+          className="bg-[#176219] mx-24"
+        >
           <Text className="text-[#E0FBE2]">Recommend</Text>
         </Button>
       </View>

@@ -1,15 +1,39 @@
 import { View, Text, Pressable, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import { Button } from "~/components/ui/button";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import YoutubePlayer from "react-native-youtube-iframe";
-
+import { useGlobalSearchParams } from "expo-router/build/hooks";
 interface StateChangeCallback {
   (state: string): void;
 }
 const ExerciseDetail = () => {
+  const exercises = [
+    {
+      id: 0,
+      name: "Push up",
+      reps: 5,
+      yotubeKey: "WDIpL0pjun0",
+      rounds: 5,
+    },
+    {
+      id: 1,
+      name: "Squats",
+      reps: 10,
+      yotubeKey: "UYbsgiiZgao",
+      rounds: 3,
+    },
+    {
+      id: 2,
+      name: "Plank",
+      reps: 3,
+      yotubeKey: "mwlp75MS6Rg",
+      rounds: 10,
+    },
+  ];
+  const temp = useGlobalSearchParams();
   const router = useRouter();
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [isNext, setIsNext] = React.useState(false);
@@ -24,6 +48,10 @@ const ExerciseDetail = () => {
   const togglePlaying = React.useCallback(() => {
     setPlaying((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    console.log("temp", temp);
+  }, [temp]);
   return (
     <View className="flex-1">
       <View className="bg-[#FDFDFD] h-screen w-full">
@@ -36,24 +64,24 @@ const ExerciseDetail = () => {
           </Pressable>
           <View className="  ">
             <Text className="text-[#176219] font-semibold text-2xl">
-              Push up
+              {exercises[parseInt(temp.id?.toString())].name}
             </Text>
           </View>
         </View>
         <ScrollView className="flex-1 px-4 mt-4">
           <View className="flex flex-row items-center">
             <Text className="text-bold text-4xl text-[#176219] font-semibold w-[250px]">
-              5 reps
+              {exercises[parseInt(temp.id.toString())].reps} reps
             </Text>
             <Text className="text-sm text-[#176219] font-medium">
-              Pushup 5 times
+              {exercises[parseInt(temp.id?.toString())].rounds} rounds
             </Text>
           </View>
           <View className="rounded-lg p-4 mt-4">
             <YoutubePlayer
               height={200}
               play={playing}
-              videoId={"WDIpL0pjun0"}
+              videoId={exercises[parseInt(temp.id?.toString())].yotubeKey}
               onChangeState={onStateChange}
             />
           </View>

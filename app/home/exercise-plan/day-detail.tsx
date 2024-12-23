@@ -58,7 +58,11 @@ const DayDetail = () => {
               <Pressable
                 key={index}
                 onPress={() =>
-                  router.push("/home/exercise-plan/exercise-detail")
+                  // router.push("/home/exercise-plan/exercise-detail")
+                  router.push({
+                    pathname: "/home/exercise-plan/exercise-detail",
+                    params: { id: index },
+                  })
                 }
               >
                 <View className="bg-[#E0FBE2] p-4 my-2 rounded-md flex flex-row justify-between mx-4">
