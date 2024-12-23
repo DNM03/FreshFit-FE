@@ -10,6 +10,10 @@ Clone the source code
 git clone https://github.com/DNM03/FreshFit-FE.git
 ```
 
+```C
+cd FreshFit-FE
+```
+
 Install all the packages
 
 ```C
