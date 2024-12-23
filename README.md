@@ -41,3 +41,10 @@ npx expo start
 - Achievements
 
 </details>
+
+## Authors
+
+| STT | MSSV     | Họ và tên                                                  | Lớp      | 
+| --- | -------- | ---------------------------------------------------------- | -------- | 
+| 1   | 21520123| [Huỳnh Mạnh Tường](https://github.com/tuonghuynh11)           | KTPM2021 | 
+| 2   | 21520341| [Dương Ngọc Mẫn](https://github.com/DNM03)              | KTPM2021 |
