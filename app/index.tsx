@@ -2,12 +2,20 @@ import { useRouter } from "expo-router";
 import * as React from "react";
 import { Text, View, Image } from "react-native";
 import { Button } from "~/components/ui/button";
+import { authService } from "~/services/auth";
 
 export default function Screen() {
   const router = useRouter();
 
-  const handleNavigate = () => {
-    router.navigate("/auth/login");
+  const checkAuth = async () => {
+    const { isAuthenticated } = await authService.getAuthStatus();
+    return isAuthenticated;
+  };
+
+  const handleNavigate = async () => {
+    const isAuth = await checkAuth();
+    if (!isAuth) router.navigate("/auth/login");
+    else router.navigate("/home/dashboard/dashboard");
   };
 
   return (

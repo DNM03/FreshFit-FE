@@ -1,5 +1,5 @@
 import { View, Text, Image, Pressable } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -25,6 +25,7 @@ const Login = () => {
     console.log("Navigating to home");
     router.navigate("/home/dashboard/dashboard");
   };
+
   const {
     control,
     handleSubmit,
@@ -34,13 +35,14 @@ const Login = () => {
     defaultValues: loginDefaultValues,
   });
   const onSubmit: SubmitHandler<LoginValues> = async (data: LoginValues) => {
-    console.log(data);
     try {
       const response = await authService.login(
         data.email_or_username,
         data.password
       );
-      console.log(response);
+      if (response) {
+        handleNavigate();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -94,7 +96,7 @@ const Login = () => {
           <Button
             className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4"
             size="lg"
-            onPress={handleNavigate}
+            onPress={handleSubmit(onSubmit)}
           >
             <Text className="text-[#E0FBE2] text-lg ">Let's go</Text>
           </Button>

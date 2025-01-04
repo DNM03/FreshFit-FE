@@ -1,4 +1,5 @@
 import axios from "axios";
+import { router } from "expo-router";
 import { Platform } from "react-native";
 import { getItem, setItem, removeItem } from "~/utils/async-storage";
 
@@ -44,13 +45,15 @@ privateApi.interceptors.response.use(
       try {
         const refreshToken = await getItem<string>("refreshToken");
         const response = await axios.post("/users/refresh-token", {
-          refreshToken,
+          refresh_token: refreshToken,
         });
 
-        const { accessToken } = response.data;
-        await setItem("accessToken", accessToken);
+        console.log("token", response);
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        await setItem("accessToken", response.data.result.access_token);
+        await setItem("refreshToken", response.data.result.refresh_token);
+
+        originalRequest.headers.Authorization = `Bearer ${response.data.result.access_token}`;
         return privateApi(originalRequest);
       } catch (err) {
         await removeItem("accessToken");
@@ -61,6 +64,7 @@ privateApi.interceptors.response.use(
         } else {
           // Implement your React Native navigation here
           console.log("Redirect to login screen");
+          router.replace("/auth/login");
         }
         return Promise.reject(err);
       }
@@ -117,6 +121,7 @@ export const authService = {
     });
 
     await setItem("accessToken", response.data.accessToken);
+    await setItem("refreshToken", response.data.result.refresh_token);
     return response.data;
   },
   async verifyEmail(verifyEmailToken: string) {

@@ -6,9 +6,20 @@ import { Switch } from "~/components/ui/switch";
 type PreferencesProps = {
   //   visible: boolean;
   onClose: () => void;
+  myNotifySettings?: any;
 };
 
-const Preferences = ({ onClose }: PreferencesProps) => {
+const Preferences = ({ onClose, myNotifySettings }: PreferencesProps) => {
+  const [isAdmin, setIsAdmin] = React.useState(myNotifySettings?.isAdmin);
+  const [isChallenge, setIsChallenge] = React.useState(
+    myNotifySettings?.isChallenge
+  );
+  const [isMeal, setIsMeal] = React.useState(myNotifySettings?.isEating);
+  const [isExercise, setIsExercise] = React.useState(
+    myNotifySettings?.isWorkout
+  );
+  const [isWater, setIsWater] = React.useState(myNotifySettings?.isWater);
+  const [isHealth, setIsHealth] = React.useState(myNotifySettings?.isHealth);
   return (
     <Modal>
       <View className="flex flex-row items-center justify-between w-full">
@@ -18,24 +29,28 @@ const Preferences = ({ onClose }: PreferencesProps) => {
       </View>
       <View>
         <View className="flex flex-row items-center justify-between px-4 mt-4">
+          <Text className="text-[#176219] text-lg">Admin</Text>
+          <Switch checked={isAdmin} onCheckedChange={setIsAdmin} className="" />
+        </View>
+        <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Challenges</Text>
-          <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
+          <Switch checked={isChallenge} onCheckedChange={setIsChallenge} />
         </View>
         <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Meals</Text>
-          <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
+          <Switch checked={isMeal} onCheckedChange={setIsMeal} />
         </View>
         <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Exercises</Text>
-          <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
+          <Switch checked={isExercise} onCheckedChange={setIsExercise} />
         </View>
         <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Water</Text>
-          <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
+          <Switch checked={isWater} onCheckedChange={setIsWater} />
         </View>
         <View className="flex flex-row items-center justify-between px-4 mt-4">
           <Text className="text-[#176219] text-lg">Health</Text>
-          <Switch checked onCheckedChange={() => {}} className="bg-[#176219]" />
+          <Switch checked={isHealth} onCheckedChange={setIsHealth} />
         </View>
       </View>
     </Modal>

@@ -4,12 +4,28 @@ import { Card } from "~/components/ui/card";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { LiquidGauge } from "react-native-liquid-gauge";
 import { useRouter } from "expo-router";
+import { getProfile } from "~/services/user";
 
 const Dashboard = () => {
   const router = useRouter();
+  const [user, setUser] = React.useState<any>(null);
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getProfile();
+        setUser(response.result);
+        console.log(response.result);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUser();
+  }, []);
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
-      <Text className="text-[#176219] text-5xl font-semibold">Hello User</Text>
+      <Text className="text-[#176219] text-5xl font-semibold">
+        Hello {user?.username || "User"}
+      </Text>
       <Pressable
         onPress={() => router.navigate("/home/dashboard/calories-take-in")}
       >
@@ -104,7 +120,19 @@ const Dashboard = () => {
           </Pressable>
         </Card>
         <Card className="w-[48%] ml-auto pt-3 bg-[#E0FBE2]">
-          <Pressable onPress={() => router.navigate("/home/dashboard/bmi")}>
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: "/home/dashboard/bmi",
+                params: {
+                  height: user?.height,
+                  weight: user?.weight,
+                  date_of_birth: user?.date_of_birth,
+                  gender: user?.gender,
+                },
+              })
+            }
+          >
             <Text className="text-center text-[#176219] font-semibold text-xl">
               BMI
             </Text>

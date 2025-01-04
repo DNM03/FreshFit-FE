@@ -1,6 +1,6 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
-import { useRouter } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { Pressable } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 import DayCard from "~/components/ui/day-card";
@@ -9,6 +9,8 @@ import { Button } from "~/components/ui/button";
 const BMIScreen = () => {
   const router = useRouter();
   const [isActive, setIsActive] = React.useState(2);
+  const data = useGlobalSearchParams();
+  console.log(data);
   const daysData = [
     {
       day: "22",
@@ -39,6 +41,43 @@ const BMIScreen = () => {
       isToday: true,
     },
   ];
+
+  const calculateAge = (birthDate: string): number => {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  };
+  const calculateBMI = (weight: number, height: number): number => {
+    const heightInMeters = height / 100;
+    return parseFloat((weight / (heightInMeters * heightInMeters)).toFixed(1));
+  };
+
+  const getBMIImage = (bmi: number) => {
+    if (bmi < 18.5) {
+      return require("~/assets/images/bmi_underweight.png");
+    } else if (bmi >= 18.5 && bmi < 24.9) {
+      return require("~/assets/images/bmi_normal.png");
+    } else if (bmi >= 25 && bmi < 29.9) {
+      return require("~/assets/images/bmi_overweight.png");
+    } else if (bmi >= 30 && bmi < 34.9) {
+      return require("~/assets/images/bmi_obese.png");
+    } else {
+      return require("~/assets/images/bmi_extremely_obese.png");
+    }
+  };
+
+  const bmi = calculateBMI(Number(data.weight), Number(data.height));
+
   return (
     <View className="flex-1">
       <View className="bg-[#FDFDFD] h-screen w-full px-2">
@@ -69,26 +108,38 @@ const BMIScreen = () => {
         <View className="h-1 bg-[#3D6440] w-[100%] my-4 rounded-full"></View>
         <View className="flex flex-row justify-around mt-4  h-[60%]">
           <View>
-            <Image
-              source={require("~/assets/images/bmi_normal.png")}
-              className="h-2/3 w-[130px]"
-            />
+            <Image source={getBMIImage(bmi)} className="h-2/3 w-[130px]" />
           </View>
           <View>
             <Text className="text-[#3D6440] text-xl font-semibold">
-              Weight: <Text className="font-bold text-red-600">70kg</Text>
+              Weight:{" "}
+              <Text className="font-bold text-red-600">{data.weight}kg</Text>
             </Text>
             <Text className="text-[#3D6440] text-xl font-semibold">
-              Height: <Text className="font-bold text-red-600">175cm</Text>
+              Height:{" "}
+              <Text className="font-bold text-red-600">{data.height}cm</Text>
             </Text>
             <Text className="text-[#3D6440] text-xl font-semibold">
-              Age: <Text className="font-bold text-red-600">22</Text>
+              Age:{" "}
+              <Text className="font-bold text-red-600">
+                {calculateAge(
+                  Array.isArray(data?.date_of_birth)
+                    ? data?.date_of_birth[0]
+                    : data?.date_of_birth
+                )}
+              </Text>
             </Text>
             <Text className="text-[#3D6440] text-xl font-semibold">
-              Gender: <Text className="font-bold text-red-600">Male</Text>
+              Gender:{" "}
+              <Text className="font-bold text-red-600">
+                {data?.gender === "0" ? "Male" : "Female"}
+              </Text>
             </Text>
             <Text className="text-[#3D6440] text-xl font-semibold">
-              BMI: <Text className="font-bold text-red-600">22.6</Text>
+              BMI:{" "}
+              <Text className="font-bold text-red-600">
+                {calculateBMI(Number(data.weight), Number(data.height))}
+              </Text>
             </Text>
           </View>
         </View>
