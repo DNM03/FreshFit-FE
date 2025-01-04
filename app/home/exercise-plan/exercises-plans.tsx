@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormInput } from "~/components/ui/form-input";
 import { Button } from "~/components/ui/button";
 import PlanCard from "~/components/ui/plan-card";
@@ -33,6 +33,10 @@ const ExercisesPlans = () => {
       onProgress: false,
     },
   ];
+  const [exercisePlans, setExercisePlans] = useState([]);
+  useEffect(() => {
+    const fetchPlans = async () => {};
+  }, []);
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
       <View className="flex flex-row items-center">

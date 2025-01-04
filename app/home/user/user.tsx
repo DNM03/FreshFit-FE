@@ -18,19 +18,46 @@ import Contact from "~/features/user/contact";
 import FitnessProfile from "~/features/user/fitness-profile";
 import AccountInformation from "~/features/user/account-information";
 import Report from "~/features/user/report";
+import { authService } from "~/services/auth";
+import { getProfile } from "~/services/user";
 
 const User = () => {
   const [modalVisibale, setModalVisible] = React.useState(-1);
+  const [user, setUser] = React.useState<any>(null);
+  const [refresh, setRefresh] = React.useState(false);
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getProfile();
+        setUser(response.result);
+        setRefresh(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUser();
+  }, [refresh]);
+  const handleLogout = async () => {
+    await authService.logout();
+    router.replace("/auth/login");
+  };
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
       {modalVisibale === 1 && (
-        <Preferences onClose={() => setModalVisible(-1)} />
+        <Preferences
+          onClose={() => setModalVisible(-1)}
+          myNotifySettings={user?.myNotifySettings}
+        />
       )}
       {modalVisibale === 2 && (
         <Notifications onClose={() => setModalVisible(-1)} />
       )}
       {modalVisibale === 3 && (
-        <GoalWeight onClose={() => setModalVisible(-1)} />
+        <GoalWeight
+          onClose={() => setModalVisible(-1)}
+          goalWeight={user?.goal_weight}
+          setRefresh={setRefresh}
+        />
       )}
       {modalVisibale === 4 && (
         <FitnessProfile onClose={() => setModalVisible(-1)} />
@@ -49,15 +76,17 @@ const User = () => {
           />
         </View>
         <View className="ml-8">
-          <Text className="text-[#176219] font-bold text-2xl">User</Text>
-          <Text className="text-[#176219] font-semibold text-xl">
-            Height: 176cm
+          <Text className="text-[#176219] font-bold text-2xl">
+            {user?.fullName || "User"}
           </Text>
           <Text className="text-[#176219] font-semibold text-xl">
-            Weight: 70kg
+            Height: {user?.height}cm
           </Text>
           <Text className="text-[#176219] font-semibold text-xl">
-            Gender: Male
+            Weight: {user?.weight}kg
+          </Text>
+          <Text className="text-[#176219] font-semibold text-xl">
+            Gender: {user?.gender === 0 ? "Male" : "Female"}
           </Text>
         </View>
       </View>
@@ -135,10 +164,7 @@ const User = () => {
         </Pressable>
       </View>
       <View className="h-1 bg-[#3D6440] w-[100%] my-4 rounded-full"></View>
-      <Pressable
-        className="flex flex-row items-center"
-        onPress={() => router.replace("/auth/login")}
-      >
+      <Pressable className="flex flex-row items-center" onPress={handleLogout}>
         <LogOut size={24} color="red" />
         <Text className="text-red-600 text-xl font-semibold ml-4">Log out</Text>
       </Pressable>

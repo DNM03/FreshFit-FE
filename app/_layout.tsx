@@ -94,12 +94,12 @@ export default function RootLayout() {
               headerShown: false,
             }}
           />
-          {/* <Stack.Screen
-            name="admin"
+          <Stack.Screen
+            name="admin/admin-home"
             options={{
               headerShown: false,
             }}
-          /> */}
+          />
         </Stack>
       </SafeAreaView>
       <PortalHost />

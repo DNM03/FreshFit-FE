@@ -7,10 +7,12 @@ import { Button } from "~/components/ui/button";
 type GoalWeightProps = {
   //   visible: boolean;
   onClose: () => void;
+  goalWeight: number;
+  setRefresh: (value: boolean) => void;
 };
 
-const GoalWeight = ({ onClose }: GoalWeightProps) => {
-  const [value, setValue] = React.useState(0);
+const GoalWeight = ({ onClose, goalWeight, setRefresh }: GoalWeightProps) => {
+  const [value, setValue] = React.useState(goalWeight);
 
   return (
     <Modal>
@@ -25,7 +27,7 @@ const GoalWeight = ({ onClose }: GoalWeightProps) => {
           max={240}
           step={1}
           fractionDigits={0}
-          initialValue={0}
+          initialValue={value}
           onValueChange={(number) => setValue(parseInt(number))}
           onValueChangeEnd={(number) => setValue(parseInt(number))}
           indicatorColor="#176219"

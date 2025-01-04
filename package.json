@@ -35,6 +35,8 @@
     "clsx": "^2.1.0",
     "d3": "^7.9.0",
     "expo": "^52.0.7",
+    "expo-camera": "~16.0.10",
+    "expo-image-picker": "~16.0.3",
     "expo-linking": "~7.0.2",
     "expo-navigation-bar": "~4.0.3",
     "expo-router": "~4.0.6",
