@@ -40,7 +40,7 @@ export const getIngredientById = async (ingredientId: string) => {
 };
 
 export const searchIngredient = async (
-  search: string,
+  search?: string,
   page?: number,
   limit?: number,
   sort_by?: string,
@@ -48,14 +48,16 @@ export const searchIngredient = async (
 ) => {
   try {
     const response = await privateApi.get(
-      `/ingredients?search=${search}${page ? `&page=${page}` : ""}${
-        limit ? `&limit=${limit}` : ""
-      }${sort_by ? `&sort_by=${sort_by}` : ""}${
-        order_by ? `&order_by=${order_by}` : ""
-      }`
+      `/ingredients?${search ? `search=${search}` : ""}${
+        page ? `&page=${page}` : ""
+      }${limit ? `&limit=${limit}` : ""}${
+        sort_by ? `&sort_by=${sort_by}` : ""
+      }${order_by ? `&order_by=${order_by}` : ""}`
     );
     return response.data;
   } catch (error) {
     throw error;
   }
 };
+
+export const getFruitByName = async (name: string) => {};

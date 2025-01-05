@@ -23,7 +23,7 @@ const DayCard = ({ isToday, isActive, month, day, weekDay }: DayCardProps) => {
       )}
       <Text className="text-[#3D6440] text-sm">{month}</Text>
       <Text className="text-[#3D6440] text-4xl">{day}</Text>
-      <Text className="text-[#3D6440] text-2xl">{weekDay}</Text>
+      <Text className="text-[#3D6440] text-2xl">{weekDay.split(",")[0]}</Text>
     </View>
   );
 };
