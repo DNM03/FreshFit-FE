@@ -58,7 +58,7 @@ const Challenges = () => {
             name={plan.name}
             type={plan.type}
             length={plan.length}
-            level={plan.level}
+            estimated_calories_burned={100}
             onProgress={false}
             // isChallenge={plan.isChallenge}
             onPress={() => {

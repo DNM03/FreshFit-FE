@@ -6,37 +6,20 @@ import PlanCard from "~/components/ui/plan-card";
 import { useRouter } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 import LoadingOverlay from "~/components/ui/loading-overlay";
-import { searchWorkoutPlan } from "~/services/workout-plan";
+import {
+  addWorkoutPlan,
+  getRecommendedWorkoutPlans,
+  searchWorkoutPlan,
+} from "~/services/workout-plan";
+import { debounce } from "~/utils/debounce";
+import { set } from "zod";
 
 const ExercisesPlans = () => {
   const router = useRouter();
-  const [plans, setPlans] = useState([
-    {
-      name: "Strength for beginners",
-      type: "Strength",
-      level: "Beginner",
-      length: "4 weeks",
-      onProgress: false,
-    },
-    {
-      name: "Bodyweight for beginners",
-      type: "Bodyweight",
-      level: "Beginner",
-      length: "5 weeks",
-      onProgress: true,
-    },
-  ]);
-  const recommends = [
-    {
-      name: "Burn-out for beginners",
-      type: "Bodyweight",
-      level: "Beginner",
-      length: "5 weeks",
-      onProgress: false,
-    },
-  ];
   const [isLoading, setIsLoading] = useState(false);
   const [exercisePlans, setExercisePlans] = useState<any[]>([]);
+  const [value, setValue] = useState("System");
+  const [search, setSearch] = useState("");
   useEffect(() => {
     setIsLoading(true);
     const fetchPlans = async () => {
@@ -46,10 +29,9 @@ const ExercisesPlans = () => {
           1,
           100,
           "All",
-          "System",
+          value,
           "All"
         );
-        console.log(response.result.workoutPlans);
         setExercisePlans(response.result.workoutPlans);
       } catch (error) {
         console.log("Error", error);
@@ -58,7 +40,72 @@ const ExercisesPlans = () => {
       }
     };
     fetchPlans();
-  }, []);
+  }, [value]);
+  useEffect(() => {
+    const debounceSearch = debounce(handleSearch, 300);
+    debounceSearch();
+  }, [search]);
+  const calculateDayDiff = (date1: Date, date2: Date): number => {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const diffInTime = date2.getTime() - date1.getTime();
+    return Math.round(diffInTime / oneDay);
+  };
+  const handleSearch = async () => {
+    setIsLoading(true);
+    try {
+      const response = await searchWorkoutPlan(
+        search,
+        1,
+        100,
+        "All",
+        value,
+        "All"
+      );
+      setExercisePlans(response.result.workoutPlans);
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleRecommend = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getRecommendedWorkoutPlans({
+        height: 175,
+        weight: 70,
+        dream_weight: 75,
+        age: 22,
+        gender: "Male",
+        image: "",
+        diseases_info: "",
+        num_of_exercises: 15,
+        activityLevel: "light",
+      });
+      setExercisePlans([
+        {
+          ...response.result.workout_plan,
+          isRec: true,
+          estimated_calories_burned: 1000,
+        },
+      ]);
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleAddCustomPlan = async (data: any) => {
+    setIsLoading(true);
+    console.log(data);
+    try {
+      const response = await addWorkoutPlan(data);
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
       <View className="flex flex-row items-center">
@@ -66,7 +113,8 @@ const ExercisesPlans = () => {
           Plans
         </Text>
         <Picker
-          onValueChange={(value) => console.log(value)}
+          selectedValue={value}
+          onValueChange={(value) => setValue(value)}
           style={{
             color: "#176219",
             paddingVertical: 0,
@@ -75,34 +123,60 @@ const ExercisesPlans = () => {
         >
           <Picker.Item
             label="System"
-            value="system"
+            value="System"
             style={{ color: "#176219" }}
           />
-          <Picker.Item label="Me" value="me" style={{ color: "#176219" }} />
+          <Picker.Item label="Me" value="Me" style={{ color: "#176219" }} />
         </Picker>
       </View>
       <View className="flex flex-col ">
-        <FormInput placeholder="Search..." className="w-full" />
-        <Button
-          onPress={() => {
-            setPlans((prev) => [...prev, ...recommends]);
-          }}
-          className="bg-[#176219] mx-24"
-        >
-          <Text className="text-[#E0FBE2]">Recommend</Text>
-        </Button>
+        <FormInput
+          placeholder="Search..."
+          className="w-full"
+          value={search}
+          onChangeText={setSearch}
+        />
+        {value === "System" && (
+          <Button
+            onPress={() => {
+              // setPlans((prev) => [...prev, ...recommends]);
+              handleRecommend();
+            }}
+            className="bg-[#176219] mx-24"
+          >
+            <Text className="text-[#E0FBE2]">Recommend</Text>
+          </Button>
+        )}
       </View>
       <View>
-        {plans.map((plan, index) => (
+        {exercisePlans.map((plan) => (
           <PlanCard
-            key={index}
+            key={plan._id}
             name={plan.name}
             type={plan.type}
-            length={plan.length}
-            level={plan.level}
-            onProgress={plan.onProgress}
+            length={calculateDayDiff(
+              new Date(plan.start_date),
+              new Date(plan.end_date)
+            ).toString()}
+            // level={plan.level}
+            estimated_calories_burned={plan.estimated_calories_burned}
+            onProgress={value === "Me" ? plan.status : undefined}
             onPress={() => {
-              router.navigate("/home/exercise-plan/exercises-plan-detail");
+              if (!plan.isRec) {
+                router.push({
+                  pathname: "/home/exercise-plan/exercises-plan-detail",
+                  params: {
+                    planId: plan._id,
+                    name: plan.name,
+                    days: calculateDayDiff(
+                      new Date(plan.start_date),
+                      new Date(plan.end_date)
+                    ).toString(),
+                  },
+                });
+              } else {
+                handleAddCustomPlan(plan);
+              }
             }}
           />
         ))}

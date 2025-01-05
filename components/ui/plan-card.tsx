@@ -5,18 +5,18 @@ type PlanCardProps = {
   name: string;
   type: string;
   length: string;
-  level: string;
   onProgress: boolean;
   onPress?: () => void;
+  estimated_calories_burned: number;
 };
 
 const PlanCard = ({
   name,
   length,
   type,
-  level,
   onProgress,
   onPress,
+  estimated_calories_burned,
 }: PlanCardProps) => {
   return (
     <ImageBackground
@@ -28,16 +28,17 @@ const PlanCard = ({
       <Pressable onPress={onPress}>
         <View className="flex flex-row justify-between mt-4 p-4 rounded-md pt-32">
           <View>
-            <Text className="text-white text-xl font-bold">
-              {name} - {level}
+            <Text className="text-white text-xl font-bold">{name}</Text>
+            <Text className="text-white">
+              {length} days - {type}
             </Text>
             <Text className="text-white">
-              {length} - {type}
+              Estimated calories burned: {estimated_calories_burned}
             </Text>
           </View>
           {onProgress && (
             <Text className="text-red-600 font-bold absolute right-2">
-              On progress
+              {onProgress}
             </Text>
           )}
         </View>

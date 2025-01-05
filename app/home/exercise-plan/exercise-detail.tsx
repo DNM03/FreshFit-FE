@@ -6,34 +6,62 @@ import { Button } from "~/components/ui/button";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { useGlobalSearchParams } from "expo-router/build/hooks";
+import { getSetById } from "~/services/set";
+import { getExerciseById } from "~/services/exercises";
 interface StateChangeCallback {
   (state: string): void;
 }
 const ExerciseDetail = () => {
-  const exercises = [
-    {
-      id: 0,
-      name: "Push up",
-      reps: 5,
-      yotubeKey: "WDIpL0pjun0",
-      rounds: 5,
-    },
-    {
-      id: 1,
-      name: "Squats",
-      reps: 10,
-      yotubeKey: "UYbsgiiZgao",
-      rounds: 3,
-    },
-    {
-      id: 2,
-      name: "Plank",
-      reps: 3,
-      yotubeKey: "mwlp75MS6Rg",
-      rounds: 10,
-    },
-  ];
-  const temp = useGlobalSearchParams();
+  const params = useGlobalSearchParams();
+  console.log("params", params);
+  const [setDetail, setSetDetail] = React.useState<any>({});
+  const [exerciseDetail, setExerciseDetail] = React.useState<any>();
+  const [exerciseId, setExerciseId] = React.useState(
+    Array.isArray(params?.exercise_id)
+      ? params.exercise_id[0]
+      : params?.exercise_id || ""
+  );
+  const [videoId, setVideoId] = React.useState("");
+  useEffect(() => {
+    const fetchSetDetail = async () => {
+      try {
+        if (params?.setId === "") return;
+        const response = await getSetById(
+          Array.isArray(params?.setId) ? params.setId[0] : params?.setId
+        );
+        setSetDetail(response.set);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    fetchSetDetail();
+  }, [params?.setId]);
+  useEffect(() => {
+    const fetchExerciseDetails = async () => {
+      try {
+        const response = await getExerciseById(exerciseId);
+        setExerciseDetail(response.exercise);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    fetchExerciseDetails();
+  }, [exerciseId, params?.exercise_id]);
+
+  useEffect(() => {
+    if (exerciseDetail?.video) {
+      const videoId = extractYouTubeId(exerciseDetail?.video);
+      console.log("videoId", videoId);
+      setVideoId(videoId || "");
+    }
+  }, [exerciseDetail]);
+
+  function extractYouTubeId(url: string) {
+    const match = url.match(/(?:v=|youtu\.be\/)([\w-]+)/);
+    return match ? match[1] : null;
+  }
+
+  // const temp = useGlobalSearchParams();
   const router = useRouter();
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [isNext, setIsNext] = React.useState(false);
@@ -49,9 +77,21 @@ const ExerciseDetail = () => {
     setPlaying((prev) => !prev);
   }, []);
 
-  useEffect(() => {
-    console.log("temp", temp);
-  }, [temp]);
+  const handleNext = () => {
+    const currentIndex = setDetail?.set_exercises?.findIndex(
+      (item: any) => item.exercise_id === (exerciseDetail?._id || "")
+    );
+    console.log("currentIndex", currentIndex);
+    if (currentIndex < setDetail?.set_exercises?.length - 1) {
+      setExerciseId(
+        setDetail?.set_exercises[currentIndex + 1]?.exercise_id || ""
+      );
+      setIsNext(false);
+    } else {
+      router.navigate("/home/exercise-plan/finish-set");
+    }
+  };
+
   return (
     <View className="flex-1">
       <View className="bg-[#FDFDFD] h-screen w-full">
@@ -64,24 +104,36 @@ const ExerciseDetail = () => {
           </Pressable>
           <View className="  ">
             <Text className="text-[#176219] font-semibold text-2xl">
-              {exercises[parseInt(temp.id?.toString())].name}
+              {exerciseDetail?.name || ""}
             </Text>
           </View>
         </View>
         <ScrollView className="flex-1 px-4 mt-4">
           <View className="flex flex-row items-center">
             <Text className="text-bold text-4xl text-[#176219] font-semibold w-[250px]">
-              {exercises[parseInt(temp.id.toString())].reps} reps
+              {
+                setDetail?.set_exercises?.find(
+                  (item: any) =>
+                    item.exercise_id === (exerciseDetail?._id || "")
+                ).round
+              }{" "}
+              rounds
             </Text>
             <Text className="text-sm text-[#176219] font-medium">
-              {exercises[parseInt(temp.id?.toString())].rounds} rounds
+              {
+                setDetail?.set_exercises?.find(
+                  (item: any) =>
+                    item.exercise_id === (exerciseDetail?._id || "")
+                ).reps
+              }{" "}
+              reps
             </Text>
           </View>
           <View className="rounded-lg p-4 mt-4">
             <YoutubePlayer
               height={200}
               play={playing}
-              videoId={exercises[parseInt(temp.id?.toString())].yotubeKey}
+              videoId={videoId}
               onChangeState={onStateChange}
             />
           </View>
@@ -93,16 +145,28 @@ const ExerciseDetail = () => {
           </Button>
           <View>
             <Text className="text-center text-[#176219] font-bold text-2xl mb-4">
-              Rest 30s
+              Rest{" "}
+              {
+                setDetail?.set_exercises?.find(
+                  (item: any) =>
+                    item.exercise_id === (exerciseDetail?._id || "")
+                ).rest_per_round
+              }
+              s
             </Text>
             <View className="flex justify-center items-center">
               <CountdownCircleTimer
+                key={exerciseDetail?._id || ""}
                 isPlaying={isPlaying}
-                duration={30}
+                duration={
+                  setDetail?.set_exercises?.find(
+                    (item: any) =>
+                      item.exercise_id === (exerciseDetail?._id || "")
+                  ).rest_per_round || 5
+                }
                 colors={["#176219", "#F7B801", "#A30000", "#A30000"]}
                 colorsTime={[7, 5, 2, 0]}
                 onComplete={() => {
-                  console.log("done");
                   setIsPlaying(false);
                   setIsNext(true);
                 }}
@@ -111,7 +175,11 @@ const ExerciseDetail = () => {
               </CountdownCircleTimer>
             </View>
           </View>
-          <Button className="bg-[#176219] mx-20 mb-20 mt-8" disabled={!isNext}>
+          <Button
+            className="bg-[#176219] mx-20 mb-20 mt-8"
+            disabled={!isNext}
+            onPress={handleNext}
+          >
             <Text className="text-[#E0FBE2]">Next Exercise</Text>
           </Button>
         </ScrollView>

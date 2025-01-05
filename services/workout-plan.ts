@@ -64,3 +64,12 @@ export const searchWorkoutPlan = async (
     throw error;
   }
 };
+
+export const getRecommendedWorkoutPlans = async (data: any) => {
+  try {
+    const response = await privateApi.post("/recommends/workout-plans", data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

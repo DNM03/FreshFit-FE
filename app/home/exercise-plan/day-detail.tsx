@@ -1,31 +1,62 @@
 import { View, Text, Pressable, ImageBackground } from "react-native";
-import React from "react";
-import { useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import { ScrollView } from "react-native";
+import { getWorkoutPlanDetailById } from "~/services/workout-plan-detail";
+import { getSetById } from "~/services/set";
+import { getExerciseById } from "~/services/exercises";
 
 const DayDetail = () => {
   const router = useRouter();
-  const exercises = [
-    {
-      name: "Pushups",
-      description: "3 sets of 10 reps",
-      calories: 100,
-      rest: 30,
-    },
-    {
-      name: "Squats",
-      description: "3 sets of 10 reps",
-      calories: 100,
-      rest: 30,
-    },
-    {
-      name: "Plank",
-      description: "3 sets of 10 reps",
-      calories: 100,
-      rest: 30,
-    },
-  ];
+  const params = useGlobalSearchParams();
+  const [setId, setSetId] = React.useState("");
+  const [setDetail, setSetDetail] = React.useState<any>({});
+  const [exerciseDetails, setExerciseDetails] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchWorkoutPlan = async () => {
+      try {
+        const response = await getWorkoutPlanDetailById(
+          Array.isArray(params?.workoutId)
+            ? params.workoutId[0]
+            : params?.workoutId,
+          Array.isArray(params?.dayId) ? params.dayId[0] : params?.dayId
+        );
+        setSetId(response.workout_plan_detail.set_details[0]._id);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    fetchWorkoutPlan();
+  }, []);
+  useEffect(() => {
+    const fetchSetDetail = async () => {
+      try {
+        if (setId === "") return;
+        const response = await getSetById(setId);
+        setSetDetail(response.set);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    fetchSetDetail();
+  }, [setId]);
+  useEffect(() => {
+    const fetchExerciseDetails = async (id: string) => {
+      try {
+        const response = await getExerciseById(id);
+        setExerciseDetails((prev) => [...prev, response.exercise]);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    if (setDetail?.set_exercises) {
+      setDetail.set_exercises.forEach((exercise: any) => {
+        fetchExerciseDetails(exercise.exercise_id);
+      });
+    }
+  }, [setDetail]);
   return (
     <View className="flex-1">
       <View className="bg-[#FDFDFD] h-screen w-full">
@@ -38,7 +69,7 @@ const DayDetail = () => {
           </Pressable>
           <View className="  ">
             <Text className="text-[#176219] font-semibold text-2xl">
-              Day 1 - Arm
+              Day {params?.day || "Detail"} - Week {params?.week || "Detail"}
             </Text>
           </View>
         </View>
@@ -49,26 +80,30 @@ const DayDetail = () => {
           >
             <View className="">
               <Text className="text-white text-lg font-bold">
-                This is the set that help to improve the muscle of your arm.
+                {setDetail?.description || ""}
               </Text>
             </View>
           </ImageBackground>
           <View>
-            {exercises.map((exercise, index) => (
+            {(setDetail?.set_exercises || []).map((exercise: any) => (
               <Pressable
-                key={index}
+                key={exercise._id}
                 onPress={() =>
                   // router.push("/home/exercise-plan/exercise-detail")
                   router.push({
                     pathname: "/home/exercise-plan/exercise-detail",
-                    params: { id: index },
+                    params: { exercise_id: exercise.exercise_id, setId: setId },
                   })
                 }
               >
                 <View className="bg-[#E0FBE2] p-4 my-2 rounded-md flex flex-row justify-between mx-4">
                   <View>
                     <Text className="text-[#176219] font-semibold text-lg">
-                      {exercise.name}
+                      {
+                        exerciseDetails.find(
+                          (item) => item._id === exercise.exercise_id
+                        )?.name
+                      }
                     </Text>
                     <Text className="text-[#176219] text-sm">
                       {exercise.description}
@@ -76,10 +111,10 @@ const DayDetail = () => {
                   </View>
                   <View>
                     <Text className="text-[#176219] font-semibold text-lg">
-                      {exercise.calories} cal
+                      {exercise.estimated_calories_burned} cal
                     </Text>
                     <Text className="text-[#176219] text-sm">
-                      {exercise.rest} sec rest
+                      {exercise.rest_per_round} sec rest
                     </Text>
                   </View>
                 </View>

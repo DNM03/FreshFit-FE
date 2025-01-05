@@ -46,26 +46,7 @@ const CaloriesBurned = () => {
       name: "Pushups",
       description: "3 sets, 10 reps",
       calories: 100,
-    },
-    {
-      name: "Running",
-      description: "5 km",
-      calories: 300,
-    },
-    {
-      name: "Cycling",
-      description: "10 km",
-      calories: 300,
-    },
-    {
-      name: "Swimming",
-      description: "30 min",
-      calories: 400,
-    },
-    {
-      name: "Walking",
-      description: "2 km",
-      calories: 100,
+      pre_time: 30,
     },
   ];
   return (
@@ -117,7 +98,7 @@ const CaloriesBurned = () => {
             <CalorieCard
               key={index}
               name={data.name}
-              description={data.description}
+              time={data.pre_time}
               calorie={data.calories}
             />
           ))}
