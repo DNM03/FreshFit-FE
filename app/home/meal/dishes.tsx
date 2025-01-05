@@ -5,7 +5,7 @@ import { useGlobalSearchParams, useRouter } from "expo-router";
 import { FormInput } from "~/components/ui/form-input";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { searchDish } from "~/services/dish";
+import { getRecommendedDishes, searchDish } from "~/services/dish";
 import { debounce } from "~/utils/debounce";
 import ImagePickerModal from "~/features/image-picker";
 import { getDetection } from "~/services/image-detection";
@@ -19,6 +19,7 @@ const Dishes = () => {
   const [userDishes, setUserDishes] = React.useState<any[]>([]);
   const [search, setSearch] = React.useState("");
   const mealStore: any = useMealFormStore();
+  const [detectionResult, setDetectionResult] = useState<any>("");
 
   const params = useGlobalSearchParams();
   useEffect(() => {
@@ -83,20 +84,52 @@ const Dishes = () => {
     const debouncedFetchDishes = debounce(fetchDishes, 300);
     debouncedFetchDishes();
   }, [search]);
+  useEffect(() => {
+    const fetchDishes = async () => {
+      try {
+        const response = await searchDish(detectionResult, 1, 100);
+        setDishes(response.result.dishes);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+
+    const debouncedFetchDishes = debounce(fetchDishes, 300);
+    debouncedFetchDishes();
+  }, [detectionResult]);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = React.useState("me");
   const [image, setImage] = useState<string | null>(null);
-  const [detectionResult, setDetectionResult] = useState<any>(null);
   const handleImageSelected = async (uri: string) => {
     setImage(uri);
     setIsLoading(true);
     try {
       const result = await getDetection(uri);
-      setDetectionResult(result);
-      setSearch(result.predicted_class);
+      setDetectionResult(result.predicted_class);
     } catch (error) {
       console.log("Error", "Failed to analyze image");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleRecommend = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getRecommendedDishes({
+        number_of_dishes: 5,
+        number_of_candidates: 1,
+        activity_level: "active",
+        current_weight: 70,
+        desired_weight: 75,
+        height: 175,
+        age: 22,
+        gender: "Male",
+      });
+      // console.log(response.result.recommendations[0]);
+      setDishes(response.result.recommendations[0]);
+    } catch (error) {
+      console.log("Error", error);
     } finally {
       setIsLoading(false);
     }
@@ -187,7 +220,7 @@ const Dishes = () => {
               </Button>
               <Button
                 className="bg-[#E0FBE2] w-[150px]"
-                // onPress={() => setModalVisible(true)}
+                onPress={() => handleRecommend()}
               >
                 <Text className="text-[#176219]">Recommend</Text>
               </Button>

@@ -3,6 +3,7 @@ import React from "react";
 import { useGlobalSearchParams, useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import CreateMealForm from "~/features/meal/create-meal-form";
+import SystemMeal from "~/features/meal/system-meal";
 
 const CreateMeal = () => {
   const router = useRouter();
@@ -23,12 +24,20 @@ const CreateMeal = () => {
         </View>
       </View>
       <ScrollView className="px-6 mt-4">
-        <CreateMealForm
-          isEdit={params?.isEdit === "true"}
-          mealId={
-            Array.isArray(params?.mealId) ? params?.mealId[0] : params?.mealId
-          }
-        />
+        {params?.isSystem === "true" ? (
+          <SystemMeal
+            mealId={
+              Array.isArray(params?.mealId) ? params?.mealId[0] : params?.mealId
+            }
+          />
+        ) : (
+          <CreateMealForm
+            isEdit={params?.isEdit === "true"}
+            mealId={
+              Array.isArray(params?.mealId) ? params?.mealId[0] : params?.mealId
+            }
+          />
+        )}
       </ScrollView>
     </View>
   );

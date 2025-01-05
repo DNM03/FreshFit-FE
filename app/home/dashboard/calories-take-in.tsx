@@ -47,21 +47,7 @@ const CaloriesTakeIn = () => {
       name: "Saldad",
       description: "1 bowl",
       calories: 100,
-    },
-    {
-      name: "Burger",
-      description: "1 piece",
-      calories: 200,
-    },
-    {
-      name: "Pizza",
-      description: "2 slices",
-      calories: 500,
-    },
-    {
-      name: "Pasta",
-      description: "1 bowl",
-      calories: 400,
+      pre_time: 15,
     },
   ];
   return (
@@ -112,7 +98,7 @@ const CaloriesTakeIn = () => {
             <CalorieCard
               key={index}
               name={data.name}
-              description={data.description}
+              time={data.pre_time}
               calorie={data.calories}
             />
           ))}

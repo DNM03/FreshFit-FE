@@ -15,6 +15,7 @@ export default function Layout() {
       />
       <Stack.Screen name="day-detail" options={{ headerShown: false }} />
       <Stack.Screen name="exercise-detail" options={{ headerShown: false }} />
+      <Stack.Screen name="finish-set" options={{ headerShown: false }} />
 
       {/* <Stack.Screen name="auth/register" options={{ headerShown: false }} /> */}
     </Stack>

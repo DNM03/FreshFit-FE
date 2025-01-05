@@ -112,3 +112,15 @@ export const searchDish = async (
     throw error;
   }
 };
+
+export const getRecommendedDishes = async (data: any) => {
+  try {
+    const response = await privateApi.post(
+      "/recommends/dishes?season=athumn&meal_type=dinner&quick_recipe=true",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

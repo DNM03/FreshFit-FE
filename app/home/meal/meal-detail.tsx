@@ -5,13 +5,14 @@ import { useGlobalSearchParams, useRouter } from "expo-router";
 import { FormInput } from "~/components/ui/form-input";
 import CalorieCard from "~/components/ui/calorie-card";
 import { Button } from "~/components/ui/button";
-import { getMealByDate } from "~/services/meal";
+import { getAllMealPlans, getMealByDate } from "~/services/meal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 const MealDetail = () => {
   const router = useRouter();
   const params = useGlobalSearchParams();
   const [mealPlan, setMealPlan] = React.useState<any>({});
+  const [systemMeals, setSystemMeals] = React.useState<any[]>([]);
   const [selectedDate, setSelectedDate] = React.useState(
     params?.date || new Date().toISOString()
   );
@@ -29,6 +30,18 @@ const MealDetail = () => {
     };
     fetchMeals();
   }, [selectedDate]);
+  useEffect(() => {
+    const fetchSystemMeals = async () => {
+      try {
+        const response = await getAllMealPlans();
+        console.log(response.result.meals);
+        setSystemMeals(response.result.meals);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    fetchSystemMeals();
+  }, []);
   const [value, setValue] = React.useState("me");
 
   return (
@@ -47,7 +60,7 @@ const MealDetail = () => {
             </Text>
           </View>
         </View>
-        {/* <Tabs
+        <Tabs
           value={value}
           onValueChange={(value) => setValue(value)}
           className="px-4 mt-4"
@@ -80,14 +93,33 @@ const MealDetail = () => {
                 >
                   <CalorieCard
                     name={data.name}
-                    description={data.description}
+                    time={data.pre_time}
                     calorie={data.calories}
                   />
                 </Pressable>
               ))}
             </ScrollView>
           </TabsContent>
-        </Tabs> */}
+          <TabsContent value="system">
+            {systemMeals.map((data: any) => (
+              <Pressable
+                key={data._id}
+                onPress={() =>
+                  router.push({
+                    pathname: "/home/meal/create-meal",
+                    params: { isSystem: "true", mealId: data._id },
+                  })
+                }
+              >
+                <CalorieCard
+                  name={data.name}
+                  time={data.pre_time}
+                  calorie={data.calories}
+                />
+              </Pressable>
+            ))}
+          </TabsContent>
+        </Tabs>
         {/* <View className="px-8 w-full mt-4">
           <FormInput placeholder="Search..." className="w-full" />
         </View> */}
@@ -97,7 +129,7 @@ const MealDetail = () => {
         >
           <Text className="text-[#E0FBE2]">Create new</Text>
         </Button> */}
-        <ScrollView className="mt-4 px-4">
+        {/* <ScrollView className="mt-4 px-4">
           {(
             mealPlan[
               Array.isArray(params?.mealType)
@@ -121,7 +153,7 @@ const MealDetail = () => {
               />
             </Pressable>
           ))}
-        </ScrollView>
+        </ScrollView> */}
       </View>
     </View>
   );

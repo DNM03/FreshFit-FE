@@ -40,14 +40,13 @@ export const getAllMealPlans = async (
   page?: number,
   limit?: number,
   type?: string,
+  meal_type?: string,
   sort_by?: string,
   order_by?: string
 ) => {
   try {
     const response = await privateApi.get(
-      `meals?page=${page ?? ""}&limit=${limit ?? ""}&type=${
-        type ?? ""
-      }&sort_by=${sort_by ?? ""}&order_by=${order_by ?? ""}`
+      `/meals?page=1&limit=100&type=System&meal_type=All&sort_by=calories&order_by=ASC`
     );
     return response.data;
   } catch (error) {
@@ -64,10 +63,11 @@ export const getMealByDate = async (date: string) => {
   }
 };
 
-export const cloneMealPlan = async (mealPlanIds: string[]) => {
+export const cloneMealPlan = async (mealPlanIds: string[], date: string) => {
   try {
     const response = await privateApi.post(`/meals/clone`, {
       meal_ids: mealPlanIds,
+      date,
     });
     return response.data;
   } catch (error) {
