@@ -10,7 +10,12 @@ import { Input } from "~/components/ui/input";
 import { Link } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "expo-router";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import {
+  useForm,
+  Controller,
+  SubmitHandler,
+  FieldErrors,
+} from "react-hook-form";
 import {
   loginDefaultValues,
   loginSchema,
@@ -18,9 +23,11 @@ import {
 } from "~/lib/zod/login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authService } from "~/services/auth";
+import LoadingOverlay from "~/components/ui/loading-overlay";
 
 const Login = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
   const handleNavigate = () => {
     console.log("Navigating to home");
     router.navigate("/home/dashboard/dashboard");
@@ -35,6 +42,7 @@ const Login = () => {
     defaultValues: loginDefaultValues,
   });
   const onSubmit: SubmitHandler<LoginValues> = async (data: LoginValues) => {
+    setIsLoading(true);
     try {
       const response = await authService.login(
         data.email_or_username,
@@ -45,7 +53,12 @@ const Login = () => {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
+  };
+  const onError = (errors: FieldErrors<LoginValues>) => {
+    console.error("Validation errors:", errors);
   };
   return (
     <View className="flex-1 items-center justify-around">
@@ -96,7 +109,7 @@ const Login = () => {
           <Button
             className="bg-[#176219] text-[#E0FBE2] mx-10 mt-4"
             size="lg"
-            onPress={handleSubmit(onSubmit)}
+            onPress={handleSubmit(onSubmit, onError)}
           >
             <Text className="text-[#E0FBE2] text-lg ">Let's go</Text>
           </Button>
@@ -117,6 +130,7 @@ const Login = () => {
       >
         Don't have an account? Sign up
       </Link>
+      <LoadingOverlay visible={isLoading} />
     </View>
   );
 };

@@ -14,11 +14,11 @@ interface LoginResponse extends AuthTokens {
 }
 
 const publicApi = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.LOCAL_URL,
 });
 
 const privateApi = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.LOCAL_URL,
 });
 
 publicApi.interceptors.request.use((config) => {
@@ -76,20 +76,25 @@ privateApi.interceptors.response.use(
 
 export const authService = {
   async login(email: string, password: string) {
-    const response = await publicApi.post("/users/login", {
-      email_or_username: email,
-      password,
-    });
+    try {
+      const response = await publicApi.post("/users/login", {
+        email_or_username: email,
+        password,
+      });
 
-    // Store all auth data
-    await setItem("accessToken", response.data.result.access_token);
-    await setItem("refreshToken", response.data.result.refresh_token);
+      // Store all auth data
+      await setItem("accessToken", response.data.result.access_token);
+      await setItem("refreshToken", response.data.result.refresh_token);
 
-    return response.data;
+      return response.data;
+    } catch (e: any) {
+      console.log("error", e?.message);
+      throw e;
+    }
   },
 
   async logout() {
-    await privateApi.post("/users/logout");
+    // await privateApi.post("/users/logout");
     await removeItem("accessToken");
     await removeItem("refreshToken");
   },

@@ -5,6 +5,8 @@ import { Button } from "~/components/ui/button";
 import PlanCard from "~/components/ui/plan-card";
 import { useRouter } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
+import LoadingOverlay from "~/components/ui/loading-overlay";
+import { searchWorkoutPlan } from "~/services/workout-plan";
 
 const ExercisesPlans = () => {
   const router = useRouter();
@@ -33,9 +35,29 @@ const ExercisesPlans = () => {
       onProgress: false,
     },
   ];
-  const [exercisePlans, setExercisePlans] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [exercisePlans, setExercisePlans] = useState<any[]>([]);
   useEffect(() => {
-    const fetchPlans = async () => {};
+    setIsLoading(true);
+    const fetchPlans = async () => {
+      try {
+        const response = await searchWorkoutPlan(
+          "",
+          1,
+          100,
+          "All",
+          "System",
+          "All"
+        );
+        console.log(response.result.workoutPlans);
+        setExercisePlans(response.result.workoutPlans);
+      } catch (error) {
+        console.log("Error", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPlans();
   }, []);
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
@@ -85,6 +107,7 @@ const ExercisesPlans = () => {
           />
         ))}
       </View>
+      <LoadingOverlay visible={isLoading} />
     </ScrollView>
   );
 };

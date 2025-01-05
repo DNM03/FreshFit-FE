@@ -4,49 +4,51 @@ const useMealFormStore = create((set) => ({
   mealData: {
     plan: {
       name: "",
-      type: "",
-      level: "",
-      length: "",
-      onProgress: false,
+      date: "",
+      description: "",
+      calories: 0,
+      pre_time: 0,
+      meal_type: "Breakfast",
     },
-    recommends: [
+    dishes: [],
+    ingredients: [
       {
-        name: "",
-        type: "",
-        level: "",
-        length: "",
-        onProgress: false,
+        ingredientId: "",
+        quantity: 0,
+        unit: "kg",
       },
     ],
   },
   updateSection: (section: any, data: any) =>
     set((state: any) => ({
-      meal: {
+      mealData: {
         ...state.mealData,
-        [section]: {
-          ...state.mealData[section],
-          ...data,
-        },
+        [section]: Array.isArray(data)
+          ? [...data]
+          : {
+              ...state.mealData[section],
+              ...data,
+            },
       },
     })),
 
   resetForm: () =>
     set({
-      meal: {
+      mealData: {
         plan: {
           name: "",
-          type: "",
-          level: "",
-          length: "",
-          onProgress: false,
+          date: "",
+          description: "",
+          calories: 0,
+          pre_time: 0,
+          meal_type: "Breakfast",
         },
-        recommends: [
+        dishes: [],
+        ingredients: [
           {
-            name: "",
-            type: "",
-            level: "",
-            length: "",
-            onProgress: false,
+            ingredientId: "",
+            quantity: 0,
+            unit: "kg",
           },
         ],
       },

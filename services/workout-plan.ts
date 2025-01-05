@@ -43,19 +43,21 @@ export const searchWorkoutPlan = async (
   search: string,
   page?: number,
   limit?: number,
+  status?: string,
+  source?: string,
   type?: string,
   sort_by?: string,
-  order_by?: string,
-  status?: string,
-  source?: string
+  order_by?: string
 ) => {
   try {
     const response = await privateApi.get(
       `/workout-plans?search=${search}${page ? `&page=${page}` : ""}${
         limit ? `&limit=${limit}` : ""
+      }${status ? `&status=${status}` : ""}${
+        source ? `&source=${source}` : ""
       }${type ? `&type=${type}` : ""}${sort_by ? `&sort_by=${sort_by}` : ""}${
         order_by ? `&order_by=${order_by}` : ""
-      }${status ? `&status=${status}` : ""}${source ? `&source=${source}` : ""}`
+      }`
     );
     return response.data;
   } catch (error) {
