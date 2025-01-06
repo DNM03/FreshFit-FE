@@ -1,7 +1,8 @@
-import { View, Text, Modal } from "react-native";
+import { View, Text, Modal, TouchableOpacity } from "react-native";
 import React from "react";
 import { ChevronLeft } from "lucide-react-native";
 import { Switch } from "~/components/ui/switch";
+import { updateNotificationSettings } from "~/services/user";
 
 type PreferencesProps = {
   //   visible: boolean;
@@ -20,6 +21,31 @@ const Preferences = ({ onClose, myNotifySettings }: PreferencesProps) => {
   );
   const [isWater, setIsWater] = React.useState(myNotifySettings?.isWater);
   const [isHealth, setIsHealth] = React.useState(myNotifySettings?.isHealth);
+  async function handleOnSave() {
+    try {
+      console.log({
+        isChallenge,
+        isMeal,
+        isExercise,
+        isWater,
+        isAdmin,
+        isHealth,
+      });
+      await updateNotificationSettings({
+        isChallenge: isChallenge ? true : false,
+        isEating: isMeal ? true : false,
+        isWorkout: isExercise ? true : false,
+        isWater: isWater ? true : false,
+        isAdmin: isAdmin ? true : false,
+        isHealth: isHealth ? true : false,
+      });
+      onClose();
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      alert(error.response.data.message);
+    }
+  }
+
   return (
     <Modal>
       <View className="flex flex-row items-center justify-between w-full">
@@ -53,6 +79,30 @@ const Preferences = ({ onClose, myNotifySettings }: PreferencesProps) => {
           <Switch checked={isHealth} onCheckedChange={setIsHealth} />
         </View>
       </View>
+      <TouchableOpacity
+        style={[
+          {
+            // flex: 1,
+            backgroundColor: "#176219",
+            padding: 10,
+            borderRadius: 5,
+            marginTop: 10,
+            width: "50%",
+            alignSelf: "center",
+          },
+        ]}
+        onPress={handleOnSave}
+      >
+        <Text
+          style={{
+            color: "#E0FBE2",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          Save
+        </Text>
+      </TouchableOpacity>
     </Modal>
   );
 };

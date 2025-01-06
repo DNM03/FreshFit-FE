@@ -66,6 +66,10 @@ export default function RootLayout() {
           <Stack.Screen name="auth/login" options={{ headerShown: false }} />
           <Stack.Screen name="auth/register" options={{ headerShown: false }} />
           <Stack.Screen
+            name="auth/verify-email"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name="auth/forgot-password"
             options={{ headerShown: false }}
           />
@@ -74,6 +78,7 @@ export default function RootLayout() {
             name="auth/reset-password"
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="auth/level" options={{ headerShown: false }} />
           <Stack.Screen name="auth/goal" options={{ headerShown: false }} />
           <Stack.Screen
             name="auth/goal-weight"

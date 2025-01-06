@@ -4,30 +4,98 @@ import { Card } from "~/components/ui/card";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { LiquidGauge } from "react-native-liquid-gauge";
 import { useRouter } from "expo-router";
-import { getProfile } from "~/services/user";
-
+import { getHealthActivity, getProfile } from "~/services/user";
+import { useFocusEffect } from "@react-navigation/native";
+import { calculateBMI } from "~/lib/utils";
 const Dashboard = () => {
   const router = useRouter();
   const [user, setUser] = React.useState<any>(null);
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await getProfile();
-        setUser(response.result);
-        console.log(response.result);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchUser();
-  }, []);
+  const [waterActivity, setWaterActivity] = React.useState<any>({
+    goal: 1,
+    step: 0,
+    progress: 0,
+  });
+  const [consumedActivity, setConsumedActivity] = React.useState<any>({
+    value: 0,
+    target: 1,
+  });
+  const [burnedActivity, setBurnedActivity] = React.useState<any>({
+    value: 0,
+    target: 1,
+  });
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUser = async () => {
+        try {
+          // Convert to Vietnam's time zone
+          const options = { timeZone: "Asia/Ho_Chi_Minh" };
+          const a = new Date();
+          const vietnamYear = a.toLocaleString("en-US", {
+            ...options,
+            year: "numeric",
+          });
+          const vietnamMonth = a.toLocaleString("en-US", {
+            ...options,
+            month: "2-digit",
+          });
+          const vietnamDay = a.toLocaleString("en-US", {
+            ...options,
+            day: "2-digit",
+          });
+          const date = `${vietnamYear}-${vietnamMonth}-${vietnamDay}`;
+          const response = await getProfile();
+          const healthActivity = await getHealthActivity("All", date);
+          setUser(response.result);
+          setWaterActivity(
+            healthActivity.result.water.length > 0
+              ? healthActivity.result.water[0]
+              : waterActivity
+          );
+          setConsumedActivity(
+            healthActivity.result.consumed.length > 0
+              ? healthActivity.result.consumed[0]
+              : consumedActivity
+          );
+          setBurnedActivity(
+            healthActivity.result.burned.length > 0
+              ? healthActivity.result.burned[0]
+              : burnedActivity
+          );
+          console.log("healthActivity", response.result);
+          const isBMINormal = calculateBMI(
+            response.result.weight,
+            response.result.height
+          );
+          if (!isBMINormal) {
+            alert("Your BMI is not normal, please check your health profile");
+            router.push("/home/user/user");
+          }
+        } catch (err: any) {
+          const errorMessage = err.response.data.message;
+          console.log(err);
+          alert(errorMessage);
+        }
+      };
+
+      fetchUser();
+
+      // Cleanup function (optional, if needed)
+      return () => {
+        console.log("Dashboard screen unfocused");
+      };
+    }, [])
+  );
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
       <Text className="text-[#176219] text-5xl font-semibold">
         Hello {user?.username || "User"}
       </Text>
       <Pressable
-        onPress={() => router.navigate("/home/dashboard/calories-take-in")}
+        onPress={() =>
+          router.navigate({
+            pathname: "/home/dashboard/calories-take-in",
+          })
+        }
       >
         <Card className="p-5 flex flex-col items-center bg-[#E0FBE2]">
           <Text className="text-center text-[#176219] font-semibold text-xl">
@@ -36,7 +104,13 @@ const Dashboard = () => {
           <View className="flex flex-row justify-around w-full">
             <View className=" flex justify-center">
               <CircularProgress
-                value={60}
+                value={
+                  consumedActivity.target !== 0 && consumedActivity.value !== 0
+                    ? Math.round(
+                        (consumedActivity.value / consumedActivity.target) * 100
+                      )
+                    : 0
+                }
                 valueSuffix={"%"}
                 progressValueColor={"#73CFD4"}
                 activeStrokeColor={"#73CFD4"}
@@ -45,13 +119,15 @@ const Dashboard = () => {
             <View>
               <View className="flex flex-col my-4">
                 <Text className="text-[#176219] font-semibold text-2xl">
-                  2000<Text className="font-medium text-base">cal</Text>
+                  {consumedActivity.target}
+                  <Text className="font-medium text-base">cal</Text>
                 </Text>
                 <Text className="font-light text-[#176219]">Goal</Text>
               </View>
               <View>
                 <Text className="text-[#176219] font-semibold text-2xl">
-                  800<Text className="font-medium text-base">cal</Text>
+                  {consumedActivity.value}
+                  <Text className="font-medium text-base">cal</Text>
                 </Text>
                 <Text className="font-light text-[#176219]">Remaining</Text>
               </View>
@@ -69,7 +145,13 @@ const Dashboard = () => {
           <View className="flex flex-row justify-around w-full">
             <View className=" flex justify-center">
               <CircularProgress
-                value={60}
+                value={
+                  burnedActivity.target !== 0 && burnedActivity.value !== 0
+                    ? Math.round(
+                        (burnedActivity.value / burnedActivity.target) * 100
+                      )
+                    : 0
+                }
                 valueSuffix={"%"}
                 progressValueColor={"#73CFD4"}
                 activeStrokeColor={"#73CFD4"}
@@ -78,13 +160,15 @@ const Dashboard = () => {
             <View>
               <View className="flex flex-col my-4">
                 <Text className="text-[#176219] font-semibold text-2xl">
-                  2000<Text className="font-medium text-base">cal</Text>
+                  {burnedActivity.target}
+                  <Text className="font-medium text-base">cal</Text>
                 </Text>
                 <Text className="font-light text-[#176219]">Goal</Text>
               </View>
               <View>
                 <Text className="text-[#176219] font-semibold text-2xl">
-                  800<Text className="font-medium text-base">cal</Text>
+                  {burnedActivity.value}
+                  <Text className="font-medium text-base">cal</Text>
                 </Text>
                 <Text className="font-light text-[#176219]">Remaining</Text>
               </View>
@@ -99,18 +183,24 @@ const Dashboard = () => {
               Water
             </Text>
             <View className="flex justify-center items-center mt-3">
-              <LiquidGauge value={60} />
+              <LiquidGauge
+                value={Math.round(
+                  (waterActivity.progress / waterActivity.goal) * 100
+                )}
+              />
             </View>
             <View className="flex flex-row justify-between mt-3">
               <View>
                 <Text className="text-[#176219] font-semibold text-xl ml-2 inline-flex">
-                  2000<Text className="font-medium text-base">ml</Text>
+                  {waterActivity.goal}
+                  <Text className="font-medium text-base">ml</Text>
                 </Text>
                 <Text className="font-light text-[#176219] ml-2">Goal</Text>
               </View>
               <View>
                 <Text className="text-[#176219] font-semibold text-xl ml-2 inline-flex">
-                  800<Text className="font-medium text-base">ml</Text>
+                  {waterActivity.progress}
+                  <Text className="font-medium text-base">ml</Text>
                 </Text>
                 <Text className="font-light text-[#176219] ml-2">
                   Remaining

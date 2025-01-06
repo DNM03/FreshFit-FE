@@ -1,12 +1,14 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { RulerPicker } from "react-native-ruler-picker";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 
 const GoalWeight = () => {
   const router = useRouter();
+  const { goal, gender, date_of_birth, height, weight } =
+    useLocalSearchParams();
   const [value, setValue] = React.useState(70);
   return (
     <View className="flex-1 items-center justify-center bg-[#E0FBE2]">
@@ -47,7 +49,23 @@ const GoalWeight = () => {
         <Button
           className="bg-[#176219]  mx-10 mt-4 w-[150px]"
           size="lg"
-          onPress={() => router.push("/auth/describe")}
+          onPress={() => {
+            if (value < 10) {
+              alert("Please enter a valid weight");
+            } else {
+              router.push({
+                pathname: "/auth/describe",
+                params: {
+                  goal,
+                  gender,
+                  date_of_birth,
+                  weight,
+                  goal_weight: value,
+                  height,
+                },
+              });
+            }
+          }}
         >
           <Text className="text-[#E0FBE2]">Next</Text>
         </Button>

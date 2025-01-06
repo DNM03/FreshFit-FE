@@ -9,6 +9,7 @@ import { router } from "expo-router";
 const Challenges = () => {
   const challenges = [
     {
+      id: "674c9551a333bf3b6eb51a32",
       name: "Challenge for beginners",
       type: "Strength",
       level: "Beginner",
@@ -16,6 +17,7 @@ const Challenges = () => {
       isChallenge: true,
     },
     {
+      id: "674c95c78085ea7dbbab9963",
       name: "Challenge for intermediate",
       type: "Bodyweight",
       level: "Intermediate",

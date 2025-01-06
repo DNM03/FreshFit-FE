@@ -1,34 +1,67 @@
 import { View, Text, Pressable } from "react-native";
 import React from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
-
+import { authService } from "~/services/auth";
 const Describe = () => {
   const router = useRouter();
+  const { goal, gender, date_of_birth, weight, goal_weight, height } =
+    useLocalSearchParams();
   const describes = [
     {
-      label: "Not too active",
-      value: "not-too-active",
+      label: "Sedentary",
+      value: "sedentary",
       description: "I do not exercise regularly",
     },
     {
-      label: "Lightly active",
-      value: "lightly-active",
+      label: "Lightly",
+      value: "light",
       description: "I exercise 1-2 times a week",
     },
     {
-      label: "Moderately active",
-      value: "moderately-active",
+      label: "Moderately",
+      value: "moderate",
       description: "I exercise 1-2 times a week",
     },
     {
-      label: "Highly active",
-      value: "highly-active",
+      label: "Active",
+      value: "active",
+      description: "I exercise 1-2 times a week",
+    },
+    {
+      label: "Very active",
+      value: "very_active",
       description: "I exercise 3-4 times a week",
     },
   ];
   const [selectedDescribe, setSelectedDescrive] = React.useState(-1);
+
+  const handleUpdateInfo = async () => {
+    try {
+      const response = await authService.updateInfo({
+        date_of_birth: date_of_birth as string,
+        gender: parseInt(gender as string),
+        level: parseInt(goal as string),
+        height: parseInt(height as string),
+        weight: parseInt(weight as string),
+        goal_weight: parseInt(goal_weight as string),
+        activityLevel: describes[selectedDescribe].value as string,
+      });
+      if (response) {
+        console.log("Navigating to home:", response.data);
+        handleNavigate();
+      }
+    } catch (err: any) {
+      console.log(err.response.data.message);
+      alert(err.response.data.message);
+    }
+  };
+  const handleNavigate = () => {
+    console.log("Navigating to home");
+    router.dismissAll();
+    router.navigate("/home/dashboard/dashboard");
+  };
   return (
     <View className="flex-1 items-center justify-center bg-[#E0FBE2]">
       <Text className="text-[#176219] text-4xl font-bold mb-8">
@@ -77,7 +110,13 @@ const Describe = () => {
         <Button
           className="bg-[#176219]  mx-10 mt-4 w-[150px]"
           size="lg"
-          onPress={() => router.push("/home/dashboard/dashboard")}
+          onPress={() => {
+            if (selectedDescribe === -1) {
+              alert("Please select a description");
+            } else {
+              handleUpdateInfo();
+            }
+          }}
         >
           <Text className="text-[#E0FBE2]">Next</Text>
         </Button>
