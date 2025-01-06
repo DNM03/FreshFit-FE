@@ -4,36 +4,31 @@ import { useRouter } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 
-const Goal = () => {
+const Level = () => {
   const router = useRouter();
-  const goals = [
+  const levels = [
     {
-      name: "Lose Weight",
-      description: "Lose 5kg in 1 month",
-      calories: 100,
+      name: "Beginner",
+      description:
+        "For newcomers, focusing on basics, gradual progression, and building confidence.",
     },
     {
-      name: "Gain Weight",
-      description: "Gain 5kg in 1 month",
-      calories: 100,
+      name: "Intermediate",
+      description:
+        "For those with some experience, emphasizing skill refinement and moderate challenges.",
     },
     {
-      name: "Stay Healthy",
-      description: "Stay healthy for 1 month",
-      calories: 100,
-    },
-    {
-      name: "Better Shape",
-      description: "Get in better shape in 1 month",
-      calories: 100,
+      name: "Advanced",
+      description:
+        "For experienced individuals, focusing on mastery, high intensity, and peak performance.",
     },
   ];
   const [selectedGoal, setSelectedGoal] = React.useState(-1);
   return (
     <View className="flex-1 items-center justify-center bg-[#E0FBE2]">
-      <Text className="text-[#176219] text-4xl font-bold mb-8">Goal?</Text>
+      <Text className="text-[#176219] text-4xl font-bold mb-8">Level?</Text>
       <View>
-        {goals.map((goal, index) => (
+        {levels.map((goal, index) => (
           <Pressable key={index} onPress={() => setSelectedGoal(index)}>
             <View
               className="p-2 px-8 bg-white rounded-md mb-4"
@@ -66,14 +61,18 @@ const Goal = () => {
       <Button
         className="bg-[#176219]  mx-10 mt-4  w-[200px]"
         size="lg"
-        onPress={() =>
-          router.push({
-            pathname: "/auth/gender",
-            params: {
-              goal: goals[selectedGoal].calories,
-            },
-          })
-        }
+        onPress={() => {
+          if (selectedGoal === -1) {
+            alert("Please select a level");
+          } else {
+            router.push({
+              pathname: "/auth/gender",
+              params: {
+                goal: selectedGoal,
+              },
+            });
+          }
+        }}
       >
         <Text className="text-[#E0FBE2]">Next</Text>
       </Button>
@@ -84,4 +83,4 @@ const Goal = () => {
   );
 };
 
-export default Goal;
+export default Level;

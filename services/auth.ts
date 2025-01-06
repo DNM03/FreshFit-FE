@@ -29,6 +29,7 @@ publicApi.interceptors.request.use((config) => {
 privateApi.interceptors.request.use(async (config) => {
   const token = await getItem<string>("accessToken");
   if (token) {
+    console.log("Token:", token);
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -99,11 +100,17 @@ export const authService = {
     await removeItem("refreshToken");
   },
 
-  async register(email: string, password: string) {
+  async register(username: string, email: string, password: string) {
     const response = await publicApi.post("/users/register", {
+      username,
       email,
       password,
+      confirm_password: password,
     });
+    // Store all auth data
+    await setItem("accessToken", response.data.result.access_token);
+    await setItem("refreshToken", response.data.result.refresh_token);
+
     return response.data;
   },
 
@@ -129,18 +136,22 @@ export const authService = {
     await setItem("refreshToken", response.data.result.refresh_token);
     return response.data;
   },
-  async verifyEmail(verifyEmailToken: string) {
+  async verifyEmail(email: string, otpCode: string) {
     const response = await publicApi.post("/users/verify-email", {
-      verifyEmailToken,
+      email,
+      otp_code: otpCode,
     });
     return response.data;
   },
-  async resendVerificationEmail() {
-    const response = await privateApi.post("/users/resend-verify-email");
+  async resendVerificationEmail(email: string) {
+    const response = await publicApi.post("/users/resend-verify-email", {
+      email,
+    });
     return response.data;
   },
   async verifyOtp(otp: string, email: string) {
-    const response = await publicApi.post("/users/verify-otp", {
+    console.log("OTP", otp, email);
+    const response = await publicApi.post("/users/verify-otp-code", {
       email,
       otp_code: otp,
     });
@@ -158,9 +169,73 @@ export const authService = {
     confirmPassword: string
   ) {
     const response = await publicApi.post("/users/reset-password", {
-      forgotPasswordToken,
-      newPassword,
-      confirmPassword,
+      forgot_password_token: forgotPasswordToken,
+      password: newPassword,
+      confirm_password: confirmPassword,
+    });
+    return response.data;
+  },
+  async forgotPassword(email: string) {
+    const response = await publicApi.post("/users/forgot-password", {
+      email,
+    });
+    return response.data;
+  },
+  async updateInfo({
+    username,
+    fullName,
+    date_of_birth,
+    gender, // 0 - Male, 1 - Female
+    avatar,
+    height,
+    weight,
+    goal_weight,
+    level, // 0 - Beginner, 1 - Intermediate, 2 - Advanced,
+    activityLevel,
+  }: {
+    username?: string;
+    fullName?: string;
+    date_of_birth?: string;
+    gender?: number;
+    avatar?: string;
+    height?: number;
+    weight?: number;
+    goal_weight?: number;
+    level?: number;
+    activityLevel?: string;
+  }) {
+    const object: Record<string, any> = {};
+
+    // Loop through arguments and only include those with a defined value
+    Object.entries({
+      username,
+      fullName,
+      date_of_birth,
+      gender,
+      avatar,
+      height,
+      weight,
+      goal_weight,
+      level,
+      activityLevel,
+    }).forEach(([key, value]) => {
+      if (value !== undefined) {
+        object[key] = value;
+      }
+    });
+
+    const response = await privateApi.patch("/users/me", object);
+    return response.data;
+  },
+  async changePassword(
+    old_password: string,
+    new_password: string,
+    confirm_password: string
+  ) {
+    const response = await privateApi.put("/users/change-password", {
+      old_password,
+      new_password,
+      confirm_password,
     });
     return response.data;
   },
