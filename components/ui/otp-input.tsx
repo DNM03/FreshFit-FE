@@ -1,32 +1,46 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, StyleSheet, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
+import React, { useState, useRef } from "react";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
+} from "react-native";
 
 interface OTPInputProps {
   codeLength?: number;
   onCodeFilled?: (code: string) => void;
 }
 
-const OTPInput: React.FC<OTPInputProps> = ({ codeLength = 4, onCodeFilled }) => {
-  const [code, setCode] = useState<string[]>(Array(codeLength).fill(''));
+const OTPInput: React.FC<OTPInputProps> = ({
+  codeLength = 4,
+  onCodeFilled,
+}) => {
+  const [code, setCode] = useState<string[]>(Array(codeLength).fill(""));
   const inputs = useRef<(TextInput | null)[]>([]);
 
   const handleTextChange = (text: string, index: number) => {
+    console.log("code:", code);
     const newCode = [...code];
     newCode[index] = text;
 
     if (text && index < codeLength - 1) {
-      inputs.current[index + 1]?.focus(); 
+      inputs.current[index + 1]?.focus();
     }
 
     setCode(newCode);
+    onCodeFilled?.(newCode.join(""));
 
-    if (newCode.every((digit) => digit !== '')) {
-      onCodeFilled?.(newCode.join(''));
-    }
+    // if (newCode.every((digit) => digit !== "")) {
+    //   onCodeFilled?.(newCode.join(""));
+    // }
   };
 
-  const handleKeyPress = (event: NativeSyntheticEvent<TextInputKeyPressEventData>, index: number) => {
-    if (event.nativeEvent.key === 'Backspace' && index > 0 && !code[index]) {
+  const handleKeyPress = (
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>,
+    index: number
+  ) => {
+    if (event.nativeEvent.key === "Backspace" && index > 0 && !code[index]) {
       inputs.current[index - 1]?.focus();
     }
   };
@@ -51,18 +65,18 @@ const OTPInput: React.FC<OTPInputProps> = ({ codeLength = 4, onCodeFilled }) => 
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   input: {
-    backgroundColor: '#ACE1AF',
+    backgroundColor: "#ACE1AF",
     width: 50,
     height: 50,
     fontSize: 24,
-    textAlign: 'center',
+    textAlign: "center",
     marginHorizontal: 5,
     borderRadius: 5,
-    color: '#176219',
+    color: "#176219",
   },
 });
 

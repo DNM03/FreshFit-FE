@@ -1,11 +1,12 @@
 import { View, Text, Pressable } from "react-native";
 import React from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 
 const Gender = () => {
   const router = useRouter();
+  const { goal } = useLocalSearchParams();
   const gender = [
     { label: "Male", value: "male" },
     { label: "Female", value: "female" },
@@ -49,7 +50,19 @@ const Gender = () => {
         <Button
           className="bg-[#176219]  mx-10 mt-4 w-[150px]"
           size="lg"
-          onPress={() => router.push("/auth/date-of-birth")}
+          onPress={() => {
+            if (selectedGender === -1) {
+              alert("Please select a gender");
+            } else {
+              router.push({
+                pathname: "/auth/date-of-birth",
+                params: {
+                  goal: goal,
+                  gender: selectedGender,
+                },
+              });
+            }
+          }}
         >
           <Text className="text-[#E0FBE2]">Next</Text>
         </Button>

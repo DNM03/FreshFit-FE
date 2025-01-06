@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Progress } from "~/components/ui/progress";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -11,6 +11,7 @@ interface DateChangeEvent {
 }
 const DateOfBirth = () => {
   const router = useRouter();
+  const { goal, gender } = useLocalSearchParams();
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
@@ -56,7 +57,20 @@ const DateOfBirth = () => {
         <Button
           className="bg-[#176219]  mx-10 mt-4 w-[150px]"
           size="lg"
-          onPress={() => router.push("/auth/height")}
+          onPress={() => {
+            if (date == null) {
+              alert("Please select a date");
+            } else {
+              router.push({
+                pathname: "/auth/height",
+                params: {
+                  goal,
+                  gender,
+                  date_of_birth: date.toISOString(),
+                },
+              });
+            }
+          }}
         >
           <Text className="text-[#E0FBE2]">Next</Text>
         </Button>

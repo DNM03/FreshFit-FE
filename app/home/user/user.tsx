@@ -15,7 +15,6 @@ import Notifications from "~/features/user/notifications";
 import { router } from "expo-router";
 import GoalWeight from "~/features/user/goal-weight";
 import Contact from "~/features/user/contact";
-import FitnessProfile from "~/features/user/fitness-profile";
 import AccountInformation from "~/features/user/account-information";
 import Report from "~/features/user/report";
 import { authService } from "~/services/auth";
@@ -25,6 +24,7 @@ const User = () => {
   const [modalVisibale, setModalVisible] = React.useState(-1);
   const [user, setUser] = React.useState<any>(null);
   const [refresh, setRefresh] = React.useState(false);
+
   React.useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -45,7 +45,10 @@ const User = () => {
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
       {modalVisibale === 1 && (
         <Preferences
-          onClose={() => setModalVisible(-1)}
+          onClose={() => {
+            setModalVisible(-1);
+            setRefresh(true);
+          }}
           myNotifySettings={user?.myNotifySettings}
         />
       )}
@@ -54,16 +57,21 @@ const User = () => {
       )}
       {modalVisibale === 3 && (
         <GoalWeight
-          onClose={() => setModalVisible(-1)}
+          onClose={() => {
+            setModalVisible(-1);
+            setRefresh(true);
+          }}
           goalWeight={user?.goal_weight}
           setRefresh={setRefresh}
         />
       )}
       {modalVisibale === 4 && (
-        <FitnessProfile onClose={() => setModalVisible(-1)} />
-      )}
-      {modalVisibale === 5 && (
-        <AccountInformation onClose={() => setModalVisible(-1)} />
+        <AccountInformation
+          onClose={() => {
+            setModalVisible(-1);
+            setRefresh(true);
+          }}
+        />
       )}
       {modalVisibale === 6 && <Report onClose={() => setModalVisible(-1)} />}
       {modalVisibale === 7 && <Contact onClose={() => setModalVisible(-1)} />}

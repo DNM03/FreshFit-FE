@@ -3,6 +3,7 @@ import React from "react";
 import { ChevronLeft } from "lucide-react-native";
 import { RulerPicker } from "react-native-ruler-picker";
 import { Button } from "~/components/ui/button";
+import { authService } from "~/services/auth";
 
 type GoalWeightProps = {
   //   visible: boolean;
@@ -13,7 +14,20 @@ type GoalWeightProps = {
 
 const GoalWeight = ({ onClose, goalWeight, setRefresh }: GoalWeightProps) => {
   const [value, setValue] = React.useState(goalWeight);
-
+  const handleUpdateInfo = async () => {
+    try {
+      const response = await authService.updateInfo({
+        goal_weight: value,
+      });
+      if (response) {
+        console.log("Navigating to home:", response.data);
+        onClose();
+      }
+    } catch (err: any) {
+      console.log(err.response.data.message);
+      alert(err.response.data.message);
+    }
+  };
   return (
     <Modal>
       <View className="flex flex-row items-center justify-between w-full">
@@ -27,7 +41,7 @@ const GoalWeight = ({ onClose, goalWeight, setRefresh }: GoalWeightProps) => {
           max={240}
           step={1}
           fractionDigits={0}
-          initialValue={value}
+          initialValue={goalWeight}
           onValueChange={(number) => setValue(parseInt(number))}
           onValueChangeEnd={(number) => setValue(parseInt(number))}
           indicatorColor="#176219"
@@ -40,7 +54,10 @@ const GoalWeight = ({ onClose, goalWeight, setRefresh }: GoalWeightProps) => {
           {value} kg
         </Text>
         <View className="px-8 mt-8">
-          <Button className="bg-[#176219]  mt-4 w-full">
+          <Button
+            onPress={handleUpdateInfo}
+            className="bg-[#176219]  mt-4 w-full"
+          >
             <Text className="text-[#E0FBE2]">Save</Text>
           </Button>
         </View>
