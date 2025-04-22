@@ -19,6 +19,7 @@ import AccountInformation from "~/features/user/account-information";
 import Report from "~/features/user/report";
 import { authService } from "~/services/auth";
 import { getProfile } from "~/services/user";
+import FitnessProfile from "~/features/user/fitness-profile";
 
 const User = () => {
   const [modalVisibale, setModalVisible] = React.useState(-1);
@@ -66,6 +67,14 @@ const User = () => {
         />
       )}
       {modalVisibale === 4 && (
+        <FitnessProfile
+          onClose={() => {
+            setModalVisible(-1);
+            setRefresh(true);
+          }}
+        />
+      )}
+      {modalVisibale === 5 && (
         <AccountInformation
           onClose={() => {
             setModalVisible(-1);

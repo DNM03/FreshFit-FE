@@ -11,22 +11,22 @@ const ChallengeDetail = () => {
   const [value, setValue] = React.useState("excercise");
   const daysData = [
     {
-      day: "23",
-      month: "November",
-      weekDay: "Sar",
+      day: "5",
+      month: "January",
+      weekDay: "Sun",
       isToday: false,
     },
 
     {
-      day: "24",
-      month: "November",
-      weekDay: "Sun",
+      day: "6",
+      month: "January",
+      weekDay: "Mon",
       isToday: true,
     },
     {
-      day: "25",
-      month: "November",
-      weekDay: "Mon",
+      day: "7",
+      month: "January",
+      weekDay: "Tue",
       isToday: false,
     },
   ];

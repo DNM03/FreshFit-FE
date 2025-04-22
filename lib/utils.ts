@@ -14,10 +14,14 @@ export const calculateBMI = (weight: number, height: number): boolean => {
     throw new Error("Height and weight must be positive values.");
   }
 
-  const bmi = parseFloat((weight / (height * height)).toFixed(2));
+  const heightInMeters = height / 100;
+  const bmi = parseFloat(
+    (weight / (heightInMeters * heightInMeters)).toFixed(2)
+  );
 
   let category = "";
   let isNormal = false;
+  console.log("BMI", bmi);
 
   if (bmi < 18.5) {
     category = "Underweight";

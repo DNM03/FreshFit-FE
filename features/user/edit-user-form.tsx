@@ -5,11 +5,13 @@ import { FormInput } from "~/components/ui/form-input";
 import { Button } from "~/components/ui/button";
 import { Picker } from "@react-native-picker/picker";
 import { authService } from "~/services/auth";
-const EditUserForm = (onClose: any) => {
-  const [name, setName] = useState("John");
-  const [dateOfBirth, setDateOfBirth] = useState(new Date("2003-10-20"));
-  const [height, setHeight] = useState("170");
-  const [weight, setWeight] = useState("80");
+const EditUserForm = ({ onClose }: { onClose: () => void }) => {
+  const [name, setName] = useState("Nguyen Van A");
+  const [dateOfBirth, setDateOfBirth] = useState(
+    new Date("2003-10-15T05:35:32.000Z")
+  );
+  const [height, setHeight] = useState("175");
+  const [weight, setWeight] = useState("70");
   const [gender, setGender] = useState(0);
   const [email, setEmail] = useState("jonh@doe@mail.com");
 

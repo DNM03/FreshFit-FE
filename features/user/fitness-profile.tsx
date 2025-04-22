@@ -13,7 +13,7 @@ const FitnessProfile = ({ onClose }: { onClose: () => void }) => {
         </Text>
         <View className="ml-4 w-[24px]"></View>
       </View>
-      <EditUserForm />
+      <EditUserForm onClose={onClose} />
     </Modal>
   );
 };
