@@ -25,6 +25,17 @@ const Challenges = () => {
       isChallenge: true,
     },
   ];
+  const myChallenges = [
+    {
+      id: "674c9551a333bf3b6eb51a32",
+      name: "Challenge for beginners",
+      type: "Strength",
+      level: "Beginner",
+      length: "4 weeks",
+      isChallenge: true,
+    },
+  ];
+  const [value, setValue] = React.useState("system");
   return (
     <ScrollView className="bg-[#FDFDFD] h-screen p-5">
       <View className="flex flex-row items-center">
@@ -32,7 +43,8 @@ const Challenges = () => {
           Challenges
         </Text>
         <Picker
-          onValueChange={(value) => console.log(value)}
+          onValueChange={(value) => setValue(value)}
+          selectedValue={value}
           style={{
             color: "#176219",
             paddingVertical: 0,
@@ -49,25 +61,50 @@ const Challenges = () => {
       </View>
       <View className="flex flex-col ">
         <FormInput placeholder="Search..." className="w-full" />
-        <Button className="bg-[#176219] mx-24">
+        {/* <Button className="bg-[#176219] mx-24">
           <Text className="text-[#E0FBE2]">Recommend</Text>
-        </Button>
+        </Button> */}
       </View>
       <View>
-        {challenges.map((plan, index) => (
-          <PlanCard
-            key={index}
-            name={plan.name}
-            type={plan.type}
-            length={plan.length}
-            estimated_calories_burned={100}
-            onProgress={false}
-            // isChallenge={plan.isChallenge}
-            onPress={() => {
-              router.navigate("/home/challenge/challenge-overview");
-            }}
-          />
-        ))}
+        {value === "system" &&
+          challenges.map((plan, index) => (
+            <PlanCard
+              key={index}
+              name={plan.name}
+              type={plan.type}
+              length={plan.length}
+              estimated_calories_burned={100}
+              onProgress={false}
+              // isChallenge={plan.isChallenge}
+              onPress={() => {
+                router.navigate({
+                  pathname: "/home/challenge/challenge-overview",
+                  params: { id: plan.id },
+                });
+              }}
+            />
+          ))}
+        {value === "me" && (
+          <View>
+            {myChallenges.map((plan, index) => (
+              <PlanCard
+                key={index}
+                name={plan.name}
+                type={plan.type}
+                length={plan.length}
+                estimated_calories_burned={100}
+                onProgress={true}
+                // isChallenge={plan.isChallenge}
+                onPress={() => {
+                  router.navigate({
+                    pathname: "/home/challenge/challenge-overview",
+                    params: { id: plan.id, source: "user" },
+                  });
+                }}
+              />
+            ))}
+          </View>
+        )}
       </View>
     </ScrollView>
   );

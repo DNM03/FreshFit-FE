@@ -61,7 +61,8 @@ const Dashboard = () => {
               ? healthActivity.result.burned[0]
               : burnedActivity
           );
-          console.log("healthActivity", response.result);
+          console.log("healthActivity", response.result.height);
+          console.log("healthActivity", response.result.weight);
           const isBMINormal = calculateBMI(
             response.result.weight,
             response.result.height

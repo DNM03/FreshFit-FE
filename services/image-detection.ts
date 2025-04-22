@@ -2,7 +2,7 @@ import axios from "axios";
 import FormData from "form-data";
 
 const imageApi = axios.create({
-  baseURL: process.env.IMAGE_DETECTION_URL,
+  baseURL: process.env.LOCAL_IMAGE_URL,
 });
 
 export const getDetection = async (imageUri: string) => {
